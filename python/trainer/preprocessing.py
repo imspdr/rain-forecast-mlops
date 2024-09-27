@@ -32,8 +32,16 @@ class Preprocessing:
                 col_type = "categorical"
             elif len(unique_values) > self.REMOVE_CATEGORICAL_THRESHOLD and col_type == "categorical":
                 col_type = "remove(too sparse data)"
+
+
             if col_type == "numeric":
+
                 # minmax, mean, histogram
+                min = col.min()
+                # nan 을 -9 로 저장한것 처리
+                if min >= -9:
+                    df.loc[df[col_name] == -9, col_name] = 0
+
                 min = col.min()
                 max = col.max()
                 mean = col.mean()
@@ -70,4 +78,5 @@ class Preprocessing:
                 "col_type": col_type,
                 "distribution": distribution_data
             })
+        return df, self.data_dist
 

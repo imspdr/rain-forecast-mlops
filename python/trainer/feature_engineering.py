@@ -13,6 +13,7 @@ class FeatureEngineering:
         self.target = target
     def run(self, df, data_dist):
         for dist in data_dist:
+            print(dist)
             if "remove" in dist["col_type"]:
                 df = df.drop(columns=[dist["col_name"]])
             elif dist["col_type"] == "categorical":
@@ -24,6 +25,7 @@ class FeatureEngineering:
                     name = val["name"]
                     one_hot_encoding[col_name + "=" + name] = (df[col_name] == name).astype(int)
                 df = pd.concat([df, one_hot_encoding], axis=1)
+                df = df.drop(columns=[dist["col_name"]])
 
             elif dist["col_type"] == "datetime":
                 time_col = df[dist["col_name"]]
@@ -33,11 +35,8 @@ class FeatureEngineering:
                 for time_feature, format in date_dict.items():
                     datetime_features[dist["col_name"] + "-" + time_feature] = time_col.apply(
                         lambda v: timefeature_from_str(v, format))
-
                 df = pd.concat([df, datetime_features], axis=1)
-            elif dist["col_type"] == "numeric":
-                col_name = dist["col_name"]
-                df[col_name] = df[col_name].replace(-9, 0)
+                df = df.drop(columns=[dist["col_name"]])
 
         df["label"] = df[self.target].shift(-1)
         df = df.drop(df.index[-1])
