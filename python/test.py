@@ -18,24 +18,20 @@ df, data_dist = preprocessing.run(df)
 target = "RN_mm"
 feature = FeatureEngineering(target=target)
 new_df = feature.run(df, data_dist)
-# {
-#     "max_depth": {"type": 1, "min": 16, "max": 50},
-#     "learning_rate": {"type": 2, "min": 0.03, "max": 0.3},
-#     "n_estimators": {"type": 1, "min": 50, "max": 200},
-# },
 
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
+from trainer.train.trainer import Trainer
 
 y = new_df["label"]
 X = new_df.drop(columns=["label"])
 
-count = 0
-for v in y:
-    if v == 1: count+=1
+import logging
 
-print(len(y))
-print(count)
+# Set logging level to INFO
+logging.basicConfig(level=logging.INFO)
+trainer = Trainer()
+trainer.train(X.to_numpy(), y.to_numpy(), col_names=X.columns)
+
+print(trainer.report())
 
 
 

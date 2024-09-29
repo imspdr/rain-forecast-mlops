@@ -1,22 +1,19 @@
 class ModelRunner:
+    '''
+    Bohb configuration 정보로부터 모델 생성
+    '''
     def __init__(self, **conf):
         self.configuration = conf
         self.col_names = None
-        self.model = None
-        self.steps = []
-        for key in conf:
-            self.steps.append((key, conf[key]["step"](**conf[key]["params"])))
+        self.model_name = conf["name"]
+        self.model = conf["model"](**conf["params"])
 
-    def run(self, X, y, col_names):
-        # run model_runner
-        self.steps[-1][1].fit(X, y, col_names)
-        y = self.steps[-1][1].predict(X)
-        self.model = self.steps[-1][1]
-        return X, y
+    def train(self, X, y, col_names):
+        self.model.fit(X, y, col_names)
+        return self
 
     def inference(self, X):
-        y = self.steps[-1][1].predict(X)
-        return y
+        return self.model.predict(X)
 
     def get_model(self):
         return self.model
@@ -26,7 +23,7 @@ class ModelRunner:
 
     def get_config(self):
         ret_dict = []
-        for key in self.configuration:
-            # ret_dict[key] = self.configuration[key]["params"]
-            ret_dict.append({"name": key, "params": self.configuration[key]["params"]})
+        ret_dict.append({"name": "model name", "value" : self.model_name})
+        for key, value in self.configuration["params"].items():
+            ret_dict.append({"name": key, "value": value})
         return ret_dict

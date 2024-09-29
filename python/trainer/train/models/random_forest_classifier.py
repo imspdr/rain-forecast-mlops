@@ -3,13 +3,9 @@ from sklearn.ensemble import RandomForestClassifier
 
 class CustomRandomForestClassifier:
     def __init__(self, **kwargs):
-        self.n_estimators = kwargs["n_estimators"]
-        self.max_features = kwargs["max_features"]
         self.name = "RandomForestClassifier"
         self.model = RandomForestClassifier(
-            class_weight = 'balanced',
-            n_estimators=self.n_estimators,
-            max_features=self.max_features)
+            class_weight = 'balanced', **kwargs)
         self.col_names = None
 
     def fit(self, X, y, col_names):

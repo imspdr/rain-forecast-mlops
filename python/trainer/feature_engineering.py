@@ -13,7 +13,6 @@ class FeatureEngineering:
         self.target = target
     def run(self, df, data_dist):
         for dist in data_dist:
-            print(dist)
             if "remove" in dist["col_type"]:
                 df = df.drop(columns=[dist["col_name"]])
             elif dist["col_type"] == "categorical":
