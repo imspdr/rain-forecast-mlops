@@ -38,6 +38,6 @@ class FeatureEngineering:
                 df = pd.concat([df, datetime_features], axis=1)
                 df = df.drop(columns=[dist["col_name"]])
 
-        df["label"] = df[self.target].shift(-1)
+        df["label"] = df[self.target].shift(-1).apply(lambda val: 1 if val > 0 else 0)
         df = df.drop(df.index[-1])
         return df

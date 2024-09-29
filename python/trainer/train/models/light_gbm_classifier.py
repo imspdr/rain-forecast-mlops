@@ -14,6 +14,7 @@ class CustomLightGBMClassifier:
             max_depth=self.max_depth,
             importance_type="gain",
             verbose=-1,
+            class_weight="balanced",
         )
 
     def fit(self, X, y, col_names):

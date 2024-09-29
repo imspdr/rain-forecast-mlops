@@ -6,7 +6,10 @@ class CustomRandomForestClassifier:
         self.n_estimators = kwargs["n_estimators"]
         self.max_features = kwargs["max_features"]
         self.name = "RandomForestClassifier"
-        self.model = RandomForestClassifier(n_estimators=self.n_estimators, max_features=self.max_features)
+        self.model = RandomForestClassifier(
+            class_weight = 'balanced',
+            n_estimators=self.n_estimators,
+            max_features=self.max_features)
         self.col_names = None
 
     def fit(self, X, y, col_names):

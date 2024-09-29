@@ -27,35 +27,15 @@ new_df = feature.run(df, data_dist)
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
-y = new_df[target]
-X = new_df.drop(columns=[target])
+y = new_df["label"]
+X = new_df.drop(columns=["label"])
 
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+count = 0
+for v in y:
+    if v == 1: count+=1
 
-# Create LightGBM dataset for training
-train_data = lgb.Dataset(X_train, label=y_train)
-
-# Set parameters for LightGBM
-params = {
-    'objective': 'regression',
-    'metric': 'rmse',
-    'boosting_type': 'gbdt',
-    'learning_rate': 0.1,
-    'num_leaves': 31
-}
-
-# Train the model
-lgb_regressor = lgb.train(params, train_data, num_boost_round=100)
-
-# Predict on the test set
-y_pred = lgb_regressor.predict(X_test)
-
-print(y_test[:10])
-print(y_pred[:10])
-# Calculate and print Mean Squared Error
-mse = mean_squared_error(y_test, y_pred)
-print(f"Mean Squared Error: {mse:.4f}")
+print(len(y))
+print(count)
 
 
 
