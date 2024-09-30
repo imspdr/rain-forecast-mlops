@@ -56,7 +56,14 @@ class DataLoader:
                 if len(res) > 0:
                     if res[0] == "#":
                         continue
-                    day_data.append(res.split())
+                    row = res.split()
+                    new_row = []
+                    for v in row:
+                        if v in ["-9", "-9.0", "-9.00"]:
+                            new_row.append(0)
+                        else:
+                            new_row.append(v)
+                    day_data.append(new_row)
         return day_data
 
     def load_data(self, start_day, end_day):
@@ -82,4 +89,5 @@ class DataLoader:
         col_names = self.get_columns()
         ret = pd.DataFrame(total_data)
         ret.columns = col_names
+
         return ret

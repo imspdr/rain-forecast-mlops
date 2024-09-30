@@ -93,7 +93,7 @@ class Trainer:
         logging.info("[trainer] start data division")
         division = []
         for i in range(k - 1):
-            X_rest, X_part, y_rest, y_part = train_test_split(X, y, test_size=1 / (k - i))
+            X_rest, X_part, y_rest, y_part = train_test_split(X, y, test_size=1 / (k - i),  stratify=y)
             division.append([X_part, y_part])
             X = X_rest
             y = y_rest

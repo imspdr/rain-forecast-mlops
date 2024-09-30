@@ -1,11 +1,10 @@
-import pandas as pd
 import numpy as np
 
 class Preprocessing:
     def __init__(self):
         self.data_dist = []
 
-        self.UNIQUE_THRESHOLD = 12
+        self.UNIQUE_THRESHOLD = 5
         self.REMOVE_CATEGORICAL_THRESHOLD = 50
 
     def run(self, df):
@@ -37,11 +36,6 @@ class Preprocessing:
             if col_type == "numeric":
 
                 # minmax, mean, histogram
-                min = col.min()
-                # nan 을 -9 로 저장한것 처리
-                if min >= -9:
-                    df.loc[df[col_name] == -9, col_name] = 0
-
                 min = col.min()
                 max = col.max()
                 mean = col.mean()

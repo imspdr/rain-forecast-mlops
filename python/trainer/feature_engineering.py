@@ -8,10 +8,9 @@ def timefeature_from_str(v, format):
     return int(datetime.fromtimestamp(ts).strftime(format))
 
 class FeatureEngineering:
-    def __init__(self, one_hot_percentage_threshold=1, target="RN_mm"):
+    def __init__(self, one_hot_percentage_threshold=1):
         self.one_hot_percentage_threshold = one_hot_percentage_threshold
-        self.target = target
-    def run(self, df, data_dist):
+    def run(self, df, data_dist, target="RN_mm", train=True):
         for dist in data_dist:
             if "remove" in dist["col_type"]:
                 df = df.drop(columns=[dist["col_name"]])
@@ -37,6 +36,19 @@ class FeatureEngineering:
                 df = pd.concat([df, datetime_features], axis=1)
                 df = df.drop(columns=[dist["col_name"]])
 
-        df["label"] = df[self.target].shift(-1).apply(lambda val: 1 if val > 0 else 0)
-        df = df.drop(df.index[-1])
-        return df
+        def labeling(val):
+            try:
+                if float(val) > 0:
+                    return 1
+                else:
+                    return 0
+            except(TypeError, ValueError):
+                return -1
+        df["label"] = df[target].shift(-1).apply(labeling)
+        if train:
+            df = df.drop(df.index[-1])
+
+        y = df["label"]
+        X = df.drop(columns=["label"])
+
+        return X, y
