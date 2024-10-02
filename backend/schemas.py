@@ -7,15 +7,6 @@ class TrainCreate(BaseModel):
     start_day: str
     end_day: str
 
-class Train(TrainCreate):
-    id: int
-    created_at: str
-    finished_at: str | None
-    status: str
-
-    class Config:
-        orm_mode = True
-
 class TrainedModel(BaseModel):
     id: int
     train_id: int
@@ -26,5 +17,18 @@ class TrainedModel(BaseModel):
     class Config:
         orm_mode = True
 
-class CreateServingModel(BaseModel):
-    train_id: str
+class Train(TrainCreate):
+    id: int
+    created_at: str
+    finished_at: str | None
+    status: str
+    trained_model: TrainedModel | None
+    class Config:
+        orm_mode = True
+
+class ServingModel(BaseModel):
+    id: int
+    trained_model_id: int
+    hostname: str
+    url: str
+    trained_model: TrainedModel
