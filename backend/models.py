@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, Text, LargeBinary, ForeignKey
 from sqlalchemy.sql import func
 
-from db import Base
+from .db import Base
 
 
 class RainTrain(Base):

@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Session
-from models import *
-from schemas import *
-from main import url
-from k8s_operations.create_train_pod import create_train_pod
+from .models import *
+from .schemas import *
+from .k8s_operations.create_train_pod import create_train_pod
 
 
 # train CRUD
@@ -18,7 +17,7 @@ def create_train(db: Session, train_create: TrainCreate):
     db.add(db_train)
     db.commit()
     db.refresh(db_train)
-    create_train_pod(url+"trained_model", train_create.name, train_create.start_day, train_create.end_day)
+    create_train_pod(train_create.name, train_create.start_day, train_create.end_day)
     return db_train
 
 def get_train_by_name(db: Session, name: str):

@@ -1,6 +1,8 @@
 from kubernetes import client, config
 
-def create_train_pod(url: str, train_name: str, start_day: str, end_day: str, cpu: str = "1000m", mem: str = "1Gi"):
+url = "http://127.0.0.1:8000/trained_model/"
+
+def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "1000m", mem: str = "1Gi"):
     config.load_kube_config()
 
     pod = client.V1Pod(

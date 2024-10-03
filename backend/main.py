@@ -1,13 +1,9 @@
 from fastapi import Depends, FastAPI, HTTPException, File, UploadFile
-from sqlalchemy.orm import Session
-
-from services import *
-from schemas import *
-from db import SessionLocal
+from .services import *
+from .schemas import *
+from .db import SessionLocal
 
 app = FastAPI()
-
-url = "http://127.0.0.1:8000/"
 
 def get_db():
     db = SessionLocal()
