@@ -9,11 +9,10 @@ class TrainCreate(BaseModel):
 
 class TrainedModel(BaseModel):
     id: int
-    train_id: int
+    train_name: str
     name: str
     data_distribution: str
     model_info: str
-    model_pkl: object
     class Config:
         orm_mode = True
 

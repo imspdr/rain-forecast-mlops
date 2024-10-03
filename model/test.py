@@ -1,5 +1,6 @@
 import pickle
 import os
+import json
 
 from trainer.load_data import DataLoader
 from trainer.feature_engineering import FeatureEngineering
@@ -7,6 +8,7 @@ from trainer.preprocessing import Preprocessing
 from trainer.predictor import Predictor
 
 import pandas as pd
+import numpy as np
 import shap
 target = "RN_mm"
 
@@ -57,8 +59,21 @@ print(predictor.predict(df))
 #
 # print(predictor.model.get_config())
 #
-# print(predictor.model.get_model().feature_importance())
-#
+class NpEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, np.bool_):
+            return bool(obj)
+        else:
+            return super(NpEncoder, self).default(obj)
+print(predictor.model.model_name)
+test_dist = json.dumps(predictor.dist_info, cls=NpEncoder)
+print(type(test_dist))
 # fi = predictor.model.get_model().feature_importance()
 # for i, name in enumerate(fi["label"]):
 #     print(name)
