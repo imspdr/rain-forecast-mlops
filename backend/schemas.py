@@ -22,7 +22,6 @@ class Train(TrainCreate):
     created_at: str
     finished_at: str | None
     status: str
-    trained_model: TrainedModel | None
     class Config:
         orm_mode = True
 
@@ -31,4 +30,3 @@ class ServingModel(BaseModel):
     trained_model_id: int
     hostname: str
     url: str
-    trained_model: TrainedModel

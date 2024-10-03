@@ -45,15 +45,15 @@ target = "RN_mm"
 ###################serving##############################
 
 
-pkl_file = open("predictorLGBM.pkl", "rb")
+pkl_file = open("predictor.pkl", "rb")
 predictor = pickle.load(pkl_file)
 
 api_key="3I2HmlWkQhGNh5pVpOIRng"
-start_day = "20240930"
-end_day = "20240930"
+start_day = "20240912"
+end_day = "20240912"
 data_loader = DataLoader(api_key=api_key)
 df = data_loader.load_data(start_day, end_day)
-# print(predictor.predict(df))
+print(predictor.predict(df))
 #
 # print(predictor.model.get_config())
 #
@@ -65,13 +65,13 @@ df = data_loader.load_data(start_day, end_day)
 #     print(fi["value"][i])
 
 ################3 SHAP #############################
-processed_data = FeatureEngineering().run(df, predictor.dist_info, predictor.target, train=False)[0]
-explainer = shap.TreeExplainer(predictor.model.get_model().model, feature_names=processed_data.columns)
-shap_values = explainer(processed_data.to_numpy())
-import matplotlib
-shap_line = shap_values[15]
-if predictor.model.model_name == "RandomForestClassifier":
-    shap_line.values = shap_line.values[:, 1]
-    shap_line.base_values = shap_line.base_values[1]
-# print(shap_line)
-shap.plots.waterfall(shap_line)
+# processed_data = FeatureEngineering().run(df, predictor.dist_info, predictor.target, train=False)[0]
+# explainer = shap.TreeExplainer(predictor.model.get_model().model, feature_names=processed_data.columns)
+# shap_values = explainer(processed_data.to_numpy())
+# import matplotlib
+# shap_line = shap_values[15]
+# if predictor.model.model_name == "RandomForestClassifier":
+#     shap_line.values = shap_line.values[:, 1]
+#     shap_line.base_values = shap_line.base_values[1]
+# # print(shap_line)
+# shap.plots.waterfall(shap_line)

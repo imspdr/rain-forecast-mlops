@@ -91,3 +91,32 @@ class DataLoader:
         ret.columns = col_names
 
         return ret
+
+    def load_one_time(self, timehour):
+        params = {
+            "tm1": timehour,
+            "tm2": timehour,
+            "stn": "119",
+            "authKey": self.api_key
+        }
+        response = requests.get(self.url, params=params)
+
+        day_data = []
+        if response.status_code == 200:
+            for i, res in enumerate(response.text.split("\n")):
+                if len(res) > 0:
+                    if res[0] == "#":
+                        continue
+                    row = res.split()
+                    new_row = []
+                    for v in row:
+                        if v in ["-9", "-9.0", "-9.00"]:
+                            new_row.append(0)
+                        else:
+                            new_row.append(v)
+                    day_data.append(new_row)
+        col_names = self.get_columns()
+        ret = pd.DataFrame(day_data)
+        ret.columns = col_names
+
+        return ret

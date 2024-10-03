@@ -1,0 +1,12 @@
+FROM python:3.10
+
+ADD serving_requirements.txt /root/requirements.txt
+RUN pip install -r /root/requirements.txt
+
+ADD serving_main.py /root/
+ADD trainer /root/trainer
+ADD serving /root/serving
+
+WORKDIR /root
+
+ENTRYPOINT ["python3", "serving_main.py"]

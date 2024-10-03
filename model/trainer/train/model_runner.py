@@ -15,6 +15,9 @@ class ModelRunner:
     def inference(self, X):
         return self.model.predict(X)
 
+    def inference_proba(self, X):
+        return self.model.predict_proba(X)
+
     def get_model(self):
         return self.model
 

@@ -16,5 +16,8 @@ class CustomRandomForestClassifier:
     def predict(self, X):
         return self.model.predict(X)
 
+    def predict_proba(self, X):
+        return self.model.predict_proba(X)
+
     def feature_importance(self):
         return {"value": self.model.feature_importances_, "label": self.col_names}
