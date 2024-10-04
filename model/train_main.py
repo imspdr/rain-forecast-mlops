@@ -10,6 +10,7 @@ import argparse
 import logging
 import json
 import numpy as np
+import pandas as pd
 import requests
 
 
@@ -31,8 +32,8 @@ logging.basicConfig(level=logging.INFO)
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--train_name", default="", type=str)
-parser.add_argument("--url", default="", type=str)
+parser.add_argument("--train_name", default="testing", type=str)
+parser.add_argument("--url", default="http://127.0.0.1:8000/trained_model/", type=str)
 parser.add_argument("--start_day", default="20230427", type=str)
 parser.add_argument("--end_day", default="20240427", type=str)
 
@@ -49,7 +50,9 @@ url = args["url"]
 
 data_loader = DataLoader(api_key=api_key)
 df = data_loader.load_data(start_day, end_day)
-#df.to_csv("temp_data.csv", index=False)
+df.to_csv("temp_data.csv", index=False)
+
+df = pd.read_csv("temp_data.csv")
 preprocessing = Preprocessing()
 df, data_dist = preprocessing.run(df)
 
@@ -58,7 +61,7 @@ X, y = feature.run(df, data_dist, target=target)
 
 
 trainer = Trainer()
-trainer.train(X.to_numpy(), y.to_numpy(), col_names=X.columns, n_iter=1)
+trainer.train(X.to_numpy(), y.to_numpy(), col_names=list(X.columns), n_iter=1)
 
 output_path = ""
 predictor = Predictor(data_dist, target, trainer.best_model)
@@ -67,6 +70,7 @@ pkl_file = open(pkl_file_path, "wb")
 pickle.dump(predictor, pkl_file)
 
 str_dist_info = json.dumps(predictor.dist_info, cls=NpEncoder)
+print(trainer.report())
 str_model_info = json.dumps(trainer.report(), cls=NpEncoder)
 data = {
     "train_name": train_name,

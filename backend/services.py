@@ -7,17 +7,11 @@ from .k8s_operations.create_train_pod import create_train_pod
 # train CRUD
 
 def create_train(db: Session, train_create: TrainCreate):
-    db_train = RainTrain(
-        name=train_create.name,
-        cpu_size=train_create.cpu_size,
-        memory_size=train_create.memory_size,
-        start_day=train_create.start_day,
-        end_day=train_create.end_day,
-    )
+    db_train = RainTrain(**train_create.dict())
     db.add(db_train)
     db.commit()
     db.refresh(db_train)
-    create_train_pod(train_create.name, train_create.start_day, train_create.end_day)
+    create_train_pod(train_create.name, train_create.start_day, train_create.end_day, train_create.cpu_size, train_create.memory_size)
     return db_train
 
 def get_train_by_name(db: Session, name: str):
@@ -38,12 +32,12 @@ def delete_train_by_ids(db: Session, ids: [int]):
 
 # trained model CRD
 
-def create_trained_model(db: Session, trained_model: TrainedModel, model_pkl: any):
+def create_trained_model(db: Session, trained_model: TrainedModel, trained_model_pkl: any):
     db_trained_model = RainTrainedModel(
         train_name=trained_model.train_name,
         name=trained_model.name,
-        model_info=trained_model.model_info,
-        model_pkl=model_pkl,
+        trained_model_info=trained_model.trained_model_info,
+        trained_model_pkl=trained_model_pkl,
         data_distribution=trained_model.data_distribution
     )
     db.add(db_trained_model)

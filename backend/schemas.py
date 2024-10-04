@@ -12,7 +12,7 @@ class TrainedModel(BaseModel):
     train_name: str
     name: str
     data_distribution: str
-    model_info: str
+    trained_model_info: str
     class Config:
         orm_mode = True
 

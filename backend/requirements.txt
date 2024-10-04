@@ -1,3 +1,13 @@
+annotated-types==0.7.0
+anyio==4.6.0
+cachetools==5.5.0
+certifi==2024.8.30
+cffi==1.17.1
+charset-normalizer==3.3.2
+click==8.1.7
+cryptography==43.0.1
+durationpy==0.8
+exceptiongroup==1.2.2
 fastapi==0.115.0
 fastapi-cli==0.0.5
 google-auth==2.35.0
@@ -17,6 +27,7 @@ oauthlib==3.2.2
 orjson==3.10.7
 pyasn1==0.6.1
 pyasn1_modules==0.4.1
+pycparser==2.22
 pydantic==2.9.2
 pydantic-extra-types==2.9.0
 pydantic-settings==2.5.2

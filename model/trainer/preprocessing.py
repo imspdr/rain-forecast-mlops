@@ -5,7 +5,7 @@ class Preprocessing:
         self.data_dist = []
 
         self.UNIQUE_THRESHOLD = 5
-        self.REMOVE_CATEGORICAL_THRESHOLD = 50
+        self.REMOVE_CATEGORICAL_THRESHOLD = 100
 
     def run(self, df):
         for col_name in df.columns:

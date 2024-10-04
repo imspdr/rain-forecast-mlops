@@ -27,4 +27,4 @@ class CustomLightGBMClassifier:
 
     def feature_importance(self):
         fi_sum = np.sum(self.model.feature_importances_)
-        return {"label": self.col_names, "value": self.model.feature_importances_ / fi_sum}
+        return {"label": self.col_names, "value": list((self.model.feature_importances_ / fi_sum).round(4))}

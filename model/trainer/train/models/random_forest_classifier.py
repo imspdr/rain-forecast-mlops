@@ -20,4 +20,4 @@ class CustomRandomForestClassifier:
         return self.model.predict_proba(X)
 
     def feature_importance(self):
-        return {"value": self.model.feature_importances_, "label": self.col_names}
+        return {"value": list(self.model.feature_importances_.round(4)), "label": self.col_names}
