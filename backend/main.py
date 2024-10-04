@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, HTTPException, UploadFile, Response, File
 from datetime import datetime
 from sqlalchemy.orm import Session
 from .schemas import *
@@ -6,6 +6,7 @@ from .models import *
 from .db import SessionLocal, Base, engine
 from .k8s_operations.create_train_pod import create_train_pod
 import pytz
+import pickle
 
 kst = pytz.timezone('Asia/Seoul')
 
@@ -83,11 +84,12 @@ async def create_trained_model_api(trained_model: TrainedModel, db: Session = De
 
 
 @app.put("/trained_model/{id}/upload/")
-async def upload_trained_model(id: int, trained_model_pkl: UploadFile, db: Session = Depends(get_db)):
+async def upload_trained_model(id: int, trained_model_pkl: UploadFile = File(...), db: Session = Depends(get_db)):
     trained_model = db.query(RainTrainedModel).filter(RainTrainedModel.id == id).first()
     if trained_model is None:
         raise HTTPException(status_code=404, detail="Trained model not found")
     trained_model.trained_model_pkl = await trained_model_pkl.read()
+
     db.commit()
     db.refresh(trained_model)
     return trained_model.id
@@ -107,3 +109,14 @@ async def delete_trained_model(id: int, db: Session = Depends(get_db)):
         return {"message": f"train {id} has been deleted."}
     else:
         raise HTTPException(status_code=404, detail="Item not found")
+
+
+@app.get("/trained_model/download/{id}/predictor.pkl")
+async def download_file(id: int, db: Session = Depends(get_db)):
+    trained_model = db.query(RainTrainedModel).filter(RainTrainedModel.id == id).first()
+    if trained_model and trained_model.trained_model_pkl:
+        return Response(content=trained_model.trained_model_pkl, media_type="application/octet-stream", headers={
+            "Content-Disposition": "attachment; filename=predictor.pkl"
+        })
+    else:
+        raise HTTPException(status_code=404, detail="Item not found or no data available")

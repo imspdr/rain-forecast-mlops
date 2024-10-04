@@ -45,16 +45,16 @@ target = "RN_mm"
 ###################serving##############################
 
 
-# pkl_file = open("predictor.pkl", "rb")
-# predictor = pickle.load(pkl_file)
-#
-# api_key="3I2HmlWkQhGNh5pVpOIRng"
-# start_day = "20240912"
-# end_day = "20240912"
-# data_loader = DataLoader(api_key=api_key)
-# df = data_loader.load_data(start_day, end_day)
-# print(predictor.predict(df))
-#
+pkl_file = open("predictor.pkl", "rb")
+predictor = pickle.load(pkl_file)
+
+api_key="3I2HmlWkQhGNh5pVpOIRng"
+start_day = "20240912"
+end_day = "20240912"
+data_loader = DataLoader(api_key=api_key)
+df = data_loader.load_data(start_day, end_day)
+print(predictor.predict(df))
+
 # print(predictor.model.get_config())
 #
 class NpEncoder(json.JSONEncoder):
@@ -89,33 +89,3 @@ class NpEncoder(json.JSONEncoder):
 # # print(shap_line)
 # shap.plots.waterfall(shap_line)
 
-import requests
-import json
-
-# Define the URL
-url = "http://192.168.120.36:8000/trained_model/"
-
-# Prepare the JSON data
-data = {
-    "train_name": "name",
-    "name": "asd",
-    "data_distribution": "asd",
-    "trained_model_info": "qwe"
-}
-
-# Send the POST request with the JSON data
-response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(data))
-
-# Print the response
-print(response.status_code)
-ret_id = response.json()["id"]
-print(ret_id)
-
-
-with  open("predictor.pkl", "rb") as file:
-    url2 = f"http://192.168.120.36:8000/trained_model/{ret_id}/upload"
-    response = requests.put(url2, files={"trained_model_pkl": file})
-
-# Print the response
-print(response.status_code)
-print(response.json())
