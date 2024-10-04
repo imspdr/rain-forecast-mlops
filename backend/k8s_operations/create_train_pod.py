@@ -31,6 +31,7 @@ def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "
                     restart_policy="Never",
                 ),
             )
+
         )
     )
     batch_v1 = client.BatchV1Api()
