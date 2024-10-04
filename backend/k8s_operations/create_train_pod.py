@@ -1,6 +1,6 @@
 from kubernetes import client, config
 
-url = "http://127.0.0.1:8000/trained_model/"
+url = "http://192.168.120.36:8000"
 
 def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "1000m", mem: str = "1Gi"):
     config.load_kube_config()
@@ -9,7 +9,8 @@ def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "
         kind="Job",
         metadata=client.V1ObjectMeta(name="train-job-" + train_name.lower()),
         spec=client.V1JobSpec(
-            ttl_seconds_after_finished=30,
+            ttl_seconds_after_finished=10,
+            backoff_limit=5,
             template=client.V1PodTemplateSpec(
                 metadata=client.V1ObjectMeta(name="trainer-" + train_name.lower()),
                 spec=client.V1PodSpec(
@@ -17,6 +18,7 @@ def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "
                         client.V1Container(
                             name="trainer-container",
                             image="konglsh96/rain-forecast-mlops:trainer",
+                            image_pull_policy="Always",
                             command=["python3", "train_main.py"],
                             args=["--url", url, "--train_name", train_name.lower(), "--start_day", start_day, "--end_day",
                                   end_day],

@@ -25,10 +25,10 @@ class RainTrainedModel(Base):
     __tablename__ = 'rain_trained_models'
     id = Column(Integer, primary_key=True, autoincrement=True)
     train_name = Column(String(50), nullable=False)
-    name = Column(String(50), nullable=True)
-    data_distribution = Column(Text, nullable=True)
-    trained_model_info = Column(Text, nullable=True)
-    trained_model_pkl = Column(LargeBinary, nullable=True)
+    name = Column(String(50), nullable=False)
+    data_distribution = Column(Text, nullable=False)
+    trained_model_info = Column(Text, nullable=False)
+    trained_model_pkl = Column(LargeBinary(length=(2**32)-1), nullable=True)
 
     def __repr__(self):
         return f"<TrainedModel(id={self.id}, name={self.name})>"

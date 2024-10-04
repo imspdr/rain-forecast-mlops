@@ -6,15 +6,16 @@ class TrainCreate(BaseModel):
     memory_size: str
     start_day: str
     end_day: str
+    class Config:
+        from_attributes = True
 
 class TrainedModel(BaseModel):
-    id: int
     train_name: str
     name: str
     data_distribution: str
     trained_model_info: str
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class Train(TrainCreate):
     id: int
@@ -22,10 +23,12 @@ class Train(TrainCreate):
     finished_at: str | None
     status: str
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class ServingModel(BaseModel):
     id: int
     trained_model_id: int
     hostname: str
     url: str
+    class Config:
+        from_attributes = True

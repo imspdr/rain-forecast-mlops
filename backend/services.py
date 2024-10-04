@@ -32,18 +32,20 @@ def delete_train_by_ids(db: Session, ids: [int]):
 
 # trained model CRD
 
-def create_trained_model(db: Session, trained_model: TrainedModel, trained_model_pkl: any):
+def create_trained_model(db: Session, trained_model: TrainedModel):
     db_trained_model = RainTrainedModel(
         train_name=trained_model.train_name,
         name=trained_model.name,
         trained_model_info=trained_model.trained_model_info,
-        trained_model_pkl=trained_model_pkl,
         data_distribution=trained_model.data_distribution
     )
     db.add(db_trained_model)
     db.commit()
     db.refresh(db_trained_model)
     return db_trained_model
+
+#def upload_trained_model_pkl(db: Session, trained_model: RainTrainedModel, trained_model_pkl:any):
+
 
 def get_trained_model(db: Session, id: int):
     return db.query(RainTrainedModel).filter(RainTrainedModel.id == id).first()

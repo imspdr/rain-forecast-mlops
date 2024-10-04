@@ -1,3 +1,5 @@
+from venv import create
+
 from fastapi import Depends, FastAPI, HTTPException, File, UploadFile
 
 from .services import *
@@ -6,6 +8,7 @@ from .db import SessionLocal, Base, engine
 
 
 Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
 
 def get_db():
@@ -28,25 +31,21 @@ def get_train_all_api(db: Session = Depends(get_db), skip: int = 0, limit: int =
     return get_train_all(db, skip, limit)
 
 @app.post("/trained_model/")
-async def create_trained_model_api(
-    train_name: str,
-    name: str,
-    data_distribution: str,
-    trained_model_info: str,
-    trained_model_pkl: UploadFile = File(...),
-    db: Session = Depends(get_db)):
+async def create_trained_model_api(trained_model: TrainedModel, db: Session = Depends(get_db)):
+    created_model = create_trained_model(db, trained_model)
+    return created_model
 
-    trained_model_pkl_data = trained_model_pkl.file.read()
 
-    trained_model = TrainedModel(
-        train_name=train_name,
-        name=name,
-        data_distribution=data_distribution,
-        trained_model_info=trained_model_info,
-    )
-    create_trained_model(db, trained_model, trained_model_pkl_data)
+@app.put("/trained_model/{id}/upload/")
+async def upload_trained_model(id: int, trained_model_pkl:UploadFile ,db: Session = Depends(get_db)):
+    trained_model = get_trained_model(db, id)
+    if trained_model is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    trained_model.trained_model_pkl = await trained_model_pkl.read()
+    db.commit()
+    db.refresh(trained_model)
+    return trained_model.id
 
-    return {"message": "trained model created"}
 
 @app.get("/trained_model/all/")
 def get_trained_model_all_api(db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
