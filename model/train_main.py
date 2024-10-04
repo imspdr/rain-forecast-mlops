@@ -27,6 +27,10 @@ class NpEncoder(json.JSONEncoder):
         else:
             return super(NpEncoder, self).default(obj)
 
+def update_status(url, name, status):
+    status_update_url = url + f"/train/{name}/status/{status}"
+    return requests.put(status_update_url)
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -52,19 +56,38 @@ logging.info(f"train start : {train_name}")
 logging.info(f"start day : {start_day}, end day : {end_day}")
 logging.info(f"given server url : {url}")
 
+# 1. load data
+
+logging.info(update_status(url, train_name, "dataloading"))
+
 data_loader = DataLoader(api_key=api_key)
 df = data_loader.load_data(start_day, end_day)
 df.to_csv("temp_data.csv", index=False)
+
+
+# 2. preprocess data
+
+logging.info(update_status(url, train_name,"preprocessing"))
 
 df = pd.read_csv("temp_data.csv")
 preprocessing = Preprocessing()
 df, data_dist = preprocessing.run(df)
 
+# 3. feature engineering
+
 feature = FeatureEngineering()
 X, y = feature.run(df, data_dist, target=target)
 
+# 4. train
+
+logging.info(update_status(url, train_name,"training"))
+
 trainer = Trainer()
 trainer.train(X.to_numpy(), y.to_numpy(), col_names=list(X.columns), n_iter=10)
+
+# 5. save result
+
+logging.info(update_status(url, train_name,"saving"))
 
 output_path = ""
 predictor = Predictor(data_dist, target, trainer.best_model)
@@ -75,7 +98,7 @@ pickle.dump(predictor, pkl_file)
 str_dist_info = json.dumps(predictor.dist_info, cls=NpEncoder)
 str_model_info = json.dumps(trainer.report(), cls=NpEncoder)
 
-# trained_model 생성
+# 6. create trained model
 create_url = url + "/trained_model/"
 
 data = {
@@ -95,3 +118,6 @@ with open(pkl_file_path, "rb") as file:
 
 logging.info(response.status_code)
 
+# 7. complete
+
+logging.info(update_status(url, train_name,"complete"))
