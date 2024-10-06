@@ -1,0 +1,22 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: rain-multi-model
+spec:
+  predictor:
+    containers:
+      - env:
+        - name: MULTI_MODEL_SERVER
+          value: "true"
+        - name: PYTHONBUFFERED
+          value: "1"
+        name: kserve-container
+        image: konglsh96/rain-forecast-mlops:serving
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 1
+            memory: 1Gi

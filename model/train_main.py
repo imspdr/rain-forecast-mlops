@@ -92,8 +92,8 @@ logging.info(update_status(url, train_name,"saving"))
 output_path = ""
 predictor = Predictor(data_dist, target, trainer.best_model)
 pkl_file_path = os.path.join(output_path, "predictor.pkl")
-pkl_file = open(pkl_file_path, "wb")
-pickle.dump(predictor, pkl_file)
+with open(pkl_file_path, "wb") as pkl_file:
+    pickle.dump(predictor, pkl_file)
 
 str_dist_info = json.dumps(predictor.dist_info, cls=NpEncoder)
 str_model_info = json.dumps(trainer.report(), cls=NpEncoder)

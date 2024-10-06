@@ -8,6 +8,7 @@ from trainer.preprocessing import Preprocessing
 from trainer.predictor import Predictor
 
 import numpy as np
+import pandas as pd
 target = "RN_mm"
 
 ###################data##############################
@@ -19,23 +20,23 @@ target = "RN_mm"
 # df.to_csv("temp_data.csv", index=False)
 
 ##################train####################################3
-# df = pd.read_csv("temp_data.csv")
-# preprocessing = Preprocessing()
-# df, data_dist = preprocessing.run(df)
-#
-#
-# feature = FeatureEngineering()
-# X, y = feature.run(df, data_dist, target=target)
-#
-# from trainer.train.trainer import Trainer
-#
-#
-# import logging
-#
-# # Set logging level to INFO
+df = pd.read_csv("temp_data.csv")
+preprocessing = Preprocessing()
+df, data_dist = preprocessing.run(df)
+
+
+feature = FeatureEngineering()
+X, y = feature.run(df, data_dist, target=target)
+
+from trainer.train.trainer import Trainer
+
+
+import logging
+
+# Set logging level to INFO
 # logging.basicConfig(level=logging.INFO)
 # trainer = Trainer()
-# trainer.train(X.to_numpy(), y.to_numpy(), col_names=X.columns, n_iter=1)
+# trainer.train(X.to_numpy(), y.to_numpy(), col_names=X.columns, n_iter=10)
 #
 # output_path = ""
 # predictor = Predictor(data_dist, target, trainer.best_model)

@@ -1,18 +1,21 @@
-from fastapi import Depends, FastAPI, HTTPException, UploadFile, Response, File
+from fastapi import Depends, FastAPI, HTTPException, UploadFile, File, Response
 from datetime import datetime
 from sqlalchemy.orm import Session
 from .schemas import *
 from .models import *
-from .db import SessionLocal, Base, engine
-from .k8s_operations.create_train_pod import create_train_pod
+from .db import *
+from .k8s_operations import *
 import pytz
-import pickle
+import os
 
 kst = pytz.timezone('Asia/Seoul')
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+url = "http://172.30.1.29:8000"
+
 
 def get_db():
     db = SessionLocal()
@@ -97,7 +100,15 @@ async def upload_trained_model(id: int, trained_model_pkl: UploadFile = File(...
 
 @app.get("/trained_model/all/")
 def get_trained_model_all_api(db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
-    return db.query(RainTrainedModel).offset(skip).limit(limit).all()
+    all_trained_model = db.query(RainTrainedModel).offset(skip).limit(limit).all()
+    return list(map(lambda tm: {
+        "id": tm.id,
+        "train_name": tm.train_name,
+        "name": tm.name,
+        "data_distribution": tm.data_distribution,
+        "trained_model_info": tm.trained_model_info,
+        "deployed": tm.deployed
+    }, all_trained_model))
 
 
 @app.delete("/trained_model/{id}")
@@ -106,7 +117,7 @@ async def delete_trained_model(id: int, db: Session = Depends(get_db)):
     if trained_model:
         db.delete(trained_model)
         db.commit()
-        return {"message": f"train {id} has been deleted."}
+        return {"message": f"trained_model {id} has been deleted."}
     else:
         raise HTTPException(status_code=404, detail="Item not found")
 
@@ -115,8 +126,41 @@ async def delete_trained_model(id: int, db: Session = Depends(get_db)):
 async def download_file(id: int, db: Session = Depends(get_db)):
     trained_model = db.query(RainTrainedModel).filter(RainTrainedModel.id == id).first()
     if trained_model and trained_model.trained_model_pkl:
-        return Response(content=trained_model.trained_model_pkl, media_type="application/octet-stream", headers={
-            "Content-Disposition": "attachment; filename=predictor.pkl"
-        })
+        content = trained_model.trained_model_pkl
+        filename = "predictor.pkl"
+        headers = {
+                   "Content-Disposition": f"attachment; filename={filename}"
+                   }
+        return Response(content, headers=headers, media_type="application/octet-stream")
     else:
-        raise HTTPException(status_code=404, detail="Item not found or no data available")
+        raise HTTPException(status_code=404, detail="Model not found or no pkl file available")
+
+@app.put("/trained_model/deploy/{id}")
+async def deploy_trained_model(id: int, db: Session = Depends(get_db)):
+    trained_model = db.query(RainTrainedModel).filter(RainTrainedModel.id == id).first()
+    if trained_model:
+        trained_model.deployed = "true"
+        try:
+            create_trained_model_crd(trained_model.train_name, url + f"/trained_model/download/{id}/predictor.pkl")
+            db.commit()
+            db.refresh(trained_model)
+        except Exception as e:
+            return e
+        return trained_model.train_name
+    else:
+        raise HTTPException(status_code=404, detail="Model not found")
+
+@app.put("/trained_model/undeploy/{id}")
+async def undeploy_trained_model(id: int, db: Session = Depends(get_db)):
+    trained_model = db.query(RainTrainedModel).filter(RainTrainedModel.id == id).first()
+    if trained_model:
+        trained_model.deployed = "false"
+        db.commit()
+        db.refresh(trained_model)
+        try:
+            delete_trained_model_crd(trained_model.train_name)
+        except Exception as e:
+            return e
+        return trained_model.train_name
+    else:
+        raise HTTPException(status_code=404, detail="Model not found")

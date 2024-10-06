@@ -1,6 +1,6 @@
 from kubernetes import client, config
 
-url = "http://192.168.120.36:8000"
+url = "http://172.30.1.29:8000"
 
 def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "1000m", mem: str = "1Gi"):
     config.load_kube_config()
@@ -38,4 +38,38 @@ def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "
     batch_v1.create_namespaced_job(
         body=job,
         namespace="default"
+    )
+
+def create_trained_model_crd(model_name: str, storage_uri: str):
+    config.load_kube_config()
+    client.CustomObjectsApi().create_namespaced_custom_object(
+        group="serving.kserve.io",
+        version="v1alpha1",
+        namespace="default",
+        plural="trainedmodels",
+        body={
+            "apiVersion": "serving.kserve.io/v1alpha1",
+            "kind": "TrainedModel",
+            "metadata": {
+                "name": model_name
+            },
+            "spec": {
+                "model": {
+                    "storageUri": storage_uri,
+                    "framework": "custom",
+                    "memory": "1Gi"
+                },
+                "inferenceService": "rain-multi-model"
+            }
+        }
+    )
+
+def delete_trained_model_crd(model_name: str):
+    config.load_kube_config()
+    client.CustomObjectsApi().delete_namespaced_custom_object(
+        group="serving.kserve.io",
+        version="v1alpha1",
+        namespace="default",
+        plural="trainedmodels",
+        name=model_name
     )

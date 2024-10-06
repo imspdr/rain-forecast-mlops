@@ -24,11 +24,3 @@ class Train(TrainCreate):
     status: str
     class Config:
         from_attributes = True
-
-class ServingModel(BaseModel):
-    id: int
-    trained_model_id: int
-    hostname: str
-    url: str
-    class Config:
-        from_attributes = True

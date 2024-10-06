@@ -29,17 +29,7 @@ class RainTrainedModel(Base):
     data_distribution = Column(Text, nullable=False)
     trained_model_info = Column(Text, nullable=False)
     trained_model_pkl = Column(LargeBinary(length=(2**32)-1), nullable=True)
+    deployed = Column(String(50), nullable=False, default="false")
 
     def __repr__(self):
         return f"<TrainedModel(id={self.id}, name={self.name})>"
-
-class RainServingModel(Base):
-    __tablename__ = 'rain_serving_models'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    trained_model_id = Column(Integer, ForeignKey('rain_trained_models.id'), nullable=False)
-    hostname = Column(String(255), nullable=False)
-    url = Column(String(255), nullable=False)
-
-    def __repr__(self):
-        return f"<Serving Model(id={self.id}, hostname={self.hostname})>"

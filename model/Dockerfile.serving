@@ -4,9 +4,11 @@ ADD serving_requirements.txt /root/requirements.txt
 RUN pip install -r /root/requirements.txt
 
 ADD serving_main.py /root/
-ADD trainer /root/trainer
 ADD serving /root/serving
 
+ADD trainer /root/trainer
+
 WORKDIR /root
+RUN python3 trainer/setup_trainer.py install
 
 ENTRYPOINT ["python3", "serving_main.py"]
