@@ -15,8 +15,8 @@
   --darkred: #c62828;
   --scrollColor: var(--scrollColorBlack);
   --semipink: #f5f6fa;
-  --background: var(--black);
-  --foreground: var(--white);
+  --background: var(--white);
+  --foreground: var(--black);
   --highlight: var(--pink);
   --transition: 0s ease;
 }

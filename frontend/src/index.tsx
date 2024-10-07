@@ -3,7 +3,8 @@ import { BrowserRouter } from "react-router-dom";
 import { RootStoreProvider } from "./store/RootStoreProvider";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import App from "./App";
-import "./index.scss";
+import { CssBaseline } from "@mui/material";
+import "./index.css";
 
 const theme = createTheme({
   typography: {
