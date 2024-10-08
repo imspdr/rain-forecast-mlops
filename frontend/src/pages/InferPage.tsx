@@ -37,7 +37,7 @@ function InferPage() {
   };
   const infer = async () => {
     if (properDate(selectedDate) && !!nowModel) {
-      rootStore.infer(selectedDate).then((data) => {
+      rootStore.infer(selectedDate, nowModel).then((data) => {
         setResult(data.predictions[0]!);
       });
     }

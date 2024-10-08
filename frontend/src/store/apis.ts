@@ -1,55 +1,54 @@
 import axios from "axios";
 import { Train, TrainedModel, TrainedModelSimple } from "./type";
 
-const namespace = "default";
-const modelname = "";
+const namespace = "rain-forecast-mlops";
 const backend = "/api";
 
-const rainURL = `/kserve/v1/models/${modelname}:predict`;
 const rainHost = `rain-multi-model.${namespace}.example.com`;
 
 export const rainAPI = {
   kserve: {
-    inference: async (day: string) => {
-      // const ret = await axios
-      //   .post(
-      //     rainURL,
-      //     {
-      //       instances: [day],
-      //     },
-      //     {
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //         "Kserve-Host": rainHost,
-      //       },
-      //     }
-      //   )
-      //   .then((data: any) => {
-      //     return data.data;
-      //   })
-      //   .catch((e) => {
-      //     return {
-      //       predictions: [
-      //         {
-      //           y_hat: [],
-      //           y_true: [],
-      //           y_proba: [],
-      //         },
-      //       ],
-      //     };
-      //   });
-      const ret = {
-        predictions: [
+    inference: async (day: string, modelname: string) => {
+      const rainURL = `/kserve/v1/models/${modelname}:predict`;
+      const ret = await axios
+        .post(
+          rainURL,
           {
-            y_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            y_true: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1],
-            y_proba: [
-              0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0001, 0.0031,
-              0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-            ],
+            instances: [day],
           },
-        ],
-      };
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "Kserve-Host": rainHost,
+            },
+          }
+        )
+        .then((data: any) => {
+          return data.data;
+        })
+        .catch((e) => {
+          return {
+            predictions: [
+              {
+                y_hat: [],
+                y_true: [],
+                y_proba: [],
+              },
+            ],
+          };
+        });
+      // const ret = {
+      //   predictions: [
+      //     {
+      //       y_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      //       y_true: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1],
+      //       y_proba: [
+      //         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0001, 0.0031,
+      //         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      //       ],
+      //     },
+      //   ],
+      // };
       return ret;
     },
   },

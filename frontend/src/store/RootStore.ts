@@ -85,8 +85,8 @@ export class RootStore {
     this.getDeployedTrainedModels();
   };
 
-  infer = async (day: string) => {
-    const res = await rainAPI.kserve.inference(day);
+  infer = async (day: string, name: string) => {
+    const res = await rainAPI.kserve.inference(day, name);
     return res;
   };
 }
