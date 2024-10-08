@@ -8,7 +8,7 @@ function SingleBar(props: { value: number; width: number }) {
   return (
     <div
       css={css`
-        height: 50px;
+        height: 35px;
         width: ${props.width}px;
       `}
     >

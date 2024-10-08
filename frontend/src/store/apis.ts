@@ -1,14 +1,58 @@
 import axios from "axios";
-import { Train, TrainedModel } from "./type";
+import { Train, TrainedModel, TrainedModelSimple } from "./type";
 
 const namespace = "default";
 const modelname = "";
 const backend = "/api";
 
-const rainURL = `/api/v1/models/${modelname}:predict`;
+const rainURL = `/kserve/v1/models/${modelname}:predict`;
 const rainHost = `rain-multi-model.${namespace}.example.com`;
 
 export const rainAPI = {
+  kserve: {
+    inference: async (day: string) => {
+      // const ret = await axios
+      //   .post(
+      //     rainURL,
+      //     {
+      //       instances: [day],
+      //     },
+      //     {
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //         "Kserve-Host": rainHost,
+      //       },
+      //     }
+      //   )
+      //   .then((data: any) => {
+      //     return data.data;
+      //   })
+      //   .catch((e) => {
+      //     return {
+      //       predictions: [
+      //         {
+      //           y_hat: [],
+      //           y_true: [],
+      //           y_proba: [],
+      //         },
+      //       ],
+      //     };
+      //   });
+      const ret = {
+        predictions: [
+          {
+            y_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            y_true: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1],
+            y_proba: [
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0001, 0.0031,
+              0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            ],
+          },
+        ],
+      };
+      return ret;
+    },
+  },
   train: {
     create: async (name: string, startDay: string, endDay: string) => {
       const url = `${backend}/train/`;
@@ -44,9 +88,9 @@ export const rainAPI = {
     },
   },
   model: {
-    getAll: async () => {
-      const url = `${backend}/trained_model/all/`;
-      const res = await axios.get<TrainedModel[]>(url);
+    getAllDeployed: async () => {
+      const url = `${backend}/trained_model/all/deployed`;
+      const res = await axios.get<TrainedModelSimple[]>(url);
       if (axios.isAxiosError(res)) throw res;
       return res.data;
     },

@@ -1,6 +1,6 @@
 import { runInAction, makeAutoObservable } from "mobx";
 import { rainAPI } from "./apis";
-import { Train, TrainedModel } from "./type";
+import { Train, TrainedModel, TrainedModelSimple } from "./type";
 
 type Del = {
   id: number;
@@ -9,12 +9,13 @@ type Del = {
 };
 export class RootStore {
   private _trains: Train[];
-  private _trainedModels: TrainedModel[];
+  private _deployedModels: TrainedModelSimple[];
+
   private _detail: Train | undefined;
   private _delete: Del;
   constructor() {
-    this._trainedModels = [];
     this._trains = [];
+    this._deployedModels = [];
     this._detail = undefined;
     this._delete = {
       id: -1,
@@ -26,8 +27,8 @@ export class RootStore {
   get trains() {
     return this._trains;
   }
-  get trainedModels() {
-    return this._trainedModels;
+  get deployedModels() {
+    return this._deployedModels;
   }
   get detail() {
     return this._detail;
@@ -38,8 +39,8 @@ export class RootStore {
   set trains(given: Train[]) {
     this._trains = given;
   }
-  set trainedModels(given: TrainedModel[]) {
-    this._trainedModels = given;
+  set deployedModels(given: TrainedModelSimple[]) {
+    this._deployedModels = given;
   }
   set detail(given: Train | undefined) {
     this._detail = given;
@@ -64,11 +65,11 @@ export class RootStore {
 
     this.getTrains();
   };
-  getTrainedModels = async () => {
-    const res = await rainAPI.model.getAll().catch((_) => {
+  getDeployedTrainedModels = async () => {
+    const res = await rainAPI.model.getAllDeployed().catch((_) => {
       return [];
     });
-    this._trainedModels = res;
+    this._deployedModels = res;
   };
   getTrainedModel = async (name: string) => {
     const res = await rainAPI.model.getTrainedModel(name).catch((_) => undefined);
@@ -77,10 +78,15 @@ export class RootStore {
 
   deployTrainedModel = async (id: number) => {
     await rainAPI.model.deploy(id);
-    this.getTrainedModels();
+    this.getDeployedTrainedModels();
   };
   undeployTrainedModel = async (id: number) => {
     await rainAPI.model.undeploy(id);
-    this.getTrainedModels();
+    this.getDeployedTrainedModels();
+  };
+
+  infer = async (day: string) => {
+    const res = await rainAPI.kserve.inference(day);
+    return res;
   };
 }

@@ -19,11 +19,11 @@ export default function ModelTitle(props: {
 
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 10px;
       `}
       elevation={0}
     >
-      <Typography variant="h3">{props.trainName}</Typography>
+      <Typography variant="h4">{props.trainName}</Typography>
       {props.config && (
         <div
           css={css`
@@ -43,7 +43,6 @@ export default function ModelTitle(props: {
               display: flex;
               flex-direction: column;
               padding: 10px;
-              gap: 10px;
             `}
           >
             {props.config.map((item: BaseString) => {

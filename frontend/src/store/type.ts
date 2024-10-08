@@ -10,6 +10,13 @@ export type Train = {
   status: string;
 };
 
+export type TrainedModelSimple = {
+  id: number;
+  name: string;
+  train_name: string;
+  deployed: string;
+};
+
 export type TrainedModel = {
   id: number;
   name: string;

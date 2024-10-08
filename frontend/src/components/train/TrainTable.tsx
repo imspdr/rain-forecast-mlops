@@ -32,7 +32,6 @@ function TrainRow(props: {
       }
       onMouseOver={() => setHover(true)}
       onMouseOut={() => setHover(false)}
-      onDoubleClick={() => props.onClick(props.train)}
       css={css`
         padding: 0px;
       `}
@@ -41,6 +40,7 @@ function TrainRow(props: {
         css={css`
           margin-right: ${hover ? 0 : 32}px;
         `}
+        onClick={() => props.onClick(props.train)}
       >
         <ListItemText
           css={css`
@@ -87,7 +87,7 @@ export default function TrainTable(props: {
     <Card
       elevation={0}
       css={css`
-        height: 600px;
+        height: 550px;
         overflow: auto;
       `}
     >
@@ -140,7 +140,7 @@ export default function TrainTable(props: {
         {props.trains.length === 0 && (
           <div
             css={css`
-              height: 500px;
+              height: 450px;
               width: 940px;
               display: flex;
               justify-content: center;

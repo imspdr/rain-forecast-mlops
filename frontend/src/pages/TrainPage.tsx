@@ -27,58 +27,48 @@ function TrainPage() {
         <div
           css={css`
             display: flex;
-            width: 99vw;
             flex-direction: column;
-            align-items: center;
           `}
         >
-          <div
-            css={css`
-              display: flex;
-              flex-direction: column;
-              align-items: flex-start;
-            `}
-          >
-            <div>
-              <Button
-                css={css`
-                  height: 40px;
-                  width: 120px;
-                  font-size: 15px;
-                  margin: 20px 10px;
-                `}
-                variant={"outlined"}
-                onClick={() => setCreateOpen(true)}
-              >
-                새 학습 생성
-              </Button>
-              <Button
-                css={css`
-                  height: 40px;
-                  width: 120px;
-                  font-size: 15px;
-                  margin: 20px 10px;
-                `}
-                variant={"outlined"}
-                onClick={refresh}
-              >
-                새로고침
-              </Button>
-            </div>
-            <TrainTable
-              trains={rootStore.trains}
-              onClick={(clicked: Train) => {
-                rootStore.detail = clicked;
-              }}
-              onDelete={(id: number, name: string) => {
-                rootStore.delete = {
-                  id: id,
-                  name: name,
-                  open: true,
-                };
-              }}
-            />
+          <div>
+            <Button
+              css={css`
+                height: 40px;
+                width: 120px;
+                font-size: 15px;
+                margin: 20px 10px;
+              `}
+              variant={"outlined"}
+              onClick={() => setCreateOpen(true)}
+            >
+              새 학습 생성
+            </Button>
+            <Button
+              css={css`
+                height: 40px;
+                width: 120px;
+                font-size: 15px;
+                margin: 20px 10px;
+              `}
+              variant={"outlined"}
+              onClick={refresh}
+            >
+              새로고침
+            </Button>
           </div>
+          <TrainTable
+            trains={rootStore.trains}
+            onClick={(clicked: Train) => {
+              rootStore.detail = clicked;
+            }}
+            onDelete={(id: number, name: string) => {
+              rootStore.delete = {
+                id: id,
+                name: name,
+                open: true,
+              };
+            }}
+          />
         </div>
       )}
 

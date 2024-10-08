@@ -104,6 +104,16 @@ def get_trained_model_all_api(db: Session = Depends(get_db), skip: int = 0, limi
         "deployed": tm.deployed
     }, all_trained_model))
 
+@app.get("/trained_model/all/deployed")
+def get_trained_model_all_deployed(db: Session = Depends(get_db)):
+    all_trained_model = db.query(RainTrainedModel).filter(RainTrainedModel.deployed == "true").all()
+    return list(map(lambda tm: {
+        "id": tm.id,
+        "train_name": tm.train_name,
+        "name": tm.name,
+        "deployed": tm.deployed
+    }, all_trained_model))
+
 @app.get("/trained_model/{train_name}")
 def get_trained_model_by_train_name(train_name: str, db: Session = Depends(get_db)):
     tm = db.query(RainTrainedModel).filter(RainTrainedModel.train_name == train_name).first()
@@ -135,6 +145,10 @@ async def delete_trained_model_by_train_name(train_name: str, db: Session = Depe
     if trained_model:
         db.delete(trained_model)
         db.commit()
+        try:
+            delete_trained_model_crd(trained_model.train_name)
+        except Exception as e:
+            pass
         return {"message": f"trained_model named {train_name} has been deleted."}
     else:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -155,11 +169,15 @@ async def download_file(id: int, db: Session = Depends(get_db)):
 
 @app.put("/trained_model/deploy/{id}")
 async def deploy_trained_model(id: int, db: Session = Depends(get_db)):
+    num_deployed = len(db.query(RainTrainedModel).filter(RainTrainedModel.deployed == "true").all())
+    if num_deployed > 9:
+        raise HTTPException(status_code=400, detail="Resource Not Enough")
     trained_model = db.query(RainTrainedModel).filter(RainTrainedModel.id == id).first()
     if trained_model:
-        trained_model.deployed = "true"
         try:
             create_trained_model_crd(trained_model.train_name, BACKEND_URL + f"/trained_model/download/{id}/predictor.pkl")
+
+            trained_model.deployed = "true"
             db.commit()
             db.refresh(trained_model)
         except Exception as e:
@@ -172,10 +190,10 @@ async def deploy_trained_model(id: int, db: Session = Depends(get_db)):
 async def undeploy_trained_model(id: int, db: Session = Depends(get_db)):
     trained_model = db.query(RainTrainedModel).filter(RainTrainedModel.id == id).first()
     if trained_model:
-        trained_model.deployed = "false"
-        db.commit()
-        db.refresh(trained_model)
         try:
+            trained_model.deployed = "false"
+            db.commit()
+            db.refresh(trained_model)
             delete_trained_model_crd(trained_model.train_name)
         except Exception as e:
             return e

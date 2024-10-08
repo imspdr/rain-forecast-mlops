@@ -19,7 +19,7 @@ export default function CategoricalChart(props: {
     >
       <ResponsiveBar
         layout="vertical"
-        margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
+        margin={{ top: 20, right: 30, bottom: 40, left: 30 }}
         data={props.dist.value_percentage
           .sort((a, b) => b.value - a.value)
           .filter((_, i) => i < 15)

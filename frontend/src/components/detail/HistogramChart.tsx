@@ -26,7 +26,7 @@ export default function HistogramChart(props: {
     >
       <ResponsiveBar
         layout="vertical"
-        margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
+        margin={{ top: 20, right: 30, bottom: 40, left: 30 }}
         data={newData}
         indexBy="id"
         keys={["count"]}

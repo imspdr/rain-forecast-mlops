@@ -9,6 +9,7 @@ import FeatureImportance from "@src/components/detail/FeatureImportance";
 import ModelTitle from "@src/components/detail/ModelTitle";
 import DataDistributionChart from "@src/components/detail/DataDistributionChart";
 import Evaluate from "@src/components/detail/Evaluate";
+import DeployDialog from "@src/components/train/DeployDialog";
 
 function DetailPage() {
   const rootStore = useRootStore();
@@ -16,14 +17,20 @@ function DetailPage() {
     undefined
   );
   const [trainedModelInfo, setTrainedModelInfo] = useState<TrainedModelInfo | undefined>(undefined);
+  const [isDeployed, setIsDeployed] = useState(false);
+  const [deployOpen, setDeployOpen] = useState(false);
+  const [trainedModelId, setTrainedModelId] = useState(-1);
+
   useEffect(() => {
     rootStore.detail &&
       rootStore
         .getTrainedModel(rootStore.detail?.name)
         .then((data) => {
           if (data) {
+            setTrainedModelId(data?.id);
             setTrainedModelInfo(JSON.parse(data?.trained_model_info));
             setDataDistribution(JSON.parse(data?.data_distribution));
+            setIsDeployed(data.deployed === "true");
           }
         })
         .catch((e) => (rootStore.detail = undefined));
@@ -44,7 +51,7 @@ function DetailPage() {
         flex-direction: column;
         align-items: center;
         gap: 30px;
-        padding: 20px;
+        padding: 20px 20px 0px 20px;
       `}
     >
       <div
@@ -57,7 +64,7 @@ function DetailPage() {
         <Button
           css={css`
             width: 80px;
-            height: 240px;
+            height: 200px;
             ${buttonCss}
           `}
           onClick={() => {
@@ -70,9 +77,9 @@ function DetailPage() {
           trainName={rootStore.detail ? rootStore.detail.name : ""}
           config={trainedModelInfo?.best_config}
           width={500}
-          height={200}
+          height={160}
         />
-        <Evaluate evaluate={trainedModelInfo?.evaluate} width={250} height={200} />
+        <Evaluate evaluate={trainedModelInfo?.evaluate} width={280} height={160} />
 
         <div
           css={css`
@@ -83,18 +90,20 @@ function DetailPage() {
         >
           <Button
             css={css`
-              width: 240px;
-              height: 105px;
+              width: 210px;
+              height: 85px;
               ${buttonCss}
             `}
-            onClick={() => {}}
+            onClick={() => {
+              setDeployOpen(true);
+            }}
           >
-            <Typography variant="h5">배포하기</Typography>
+            <Typography variant="h5">{isDeployed ? "배포 취소" : "배포하기"}</Typography>
           </Button>
           <Button
             css={css`
-              width: 240px;
-              height: 105px;
+              width: 210px;
+              height: 85px;
               ${buttonCss}
             `}
             onClick={() => {
@@ -118,9 +127,26 @@ function DetailPage() {
           gap: 30px;
         `}
       >
-        <DataDistributionChart width={610} height={400} dataDistribution={dataDistribution} />
-        <FeatureImportance data={trainedModelInfo?.feature_importance} width={520} height={400} />
+        <DataDistributionChart width={610} height={350} dataDistribution={dataDistribution} />
+        <FeatureImportance data={trainedModelInfo?.feature_importance} width={520} height={350} />
       </div>
+      {deployOpen && rootStore.detail && (
+        <DeployDialog
+          open={deployOpen}
+          setOpen={setDeployOpen}
+          isDeployed={isDeployed}
+          name={rootStore.detail!.name}
+          onDeploy={() => {
+            isDeployed
+              ? rootStore.undeployTrainedModel(trainedModelId).then(() => {
+                  setIsDeployed(false);
+                })
+              : rootStore.deployTrainedModel(trainedModelId).then(() => {
+                  setIsDeployed(true);
+                });
+          }}
+        />
+      )}
     </div>
   );
 }

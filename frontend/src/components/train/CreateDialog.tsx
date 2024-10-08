@@ -10,20 +10,20 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { properDate } from "@src/store/util";
 
-const datePattern = /^\d{4}\d{2}\d{2}$/;
 const alphanumericPattern = /^[a-zA-Z0-9]*$/;
 
-function DateText(props: { label: string; day: string; setDay: (v: string) => void }) {
+export function DateText(props: { label: string; day: string; setDay: (v: string) => void }) {
   const [validation, setValidation] = useState(true);
   useEffect(() => {
-    setValidation(datePattern.test(props.day));
+    setValidation(properDate(props.day));
   }, [props.day]);
   return (
     <TextField
       error={!validation}
       label={`${props.label} (YYYYMMDD)`}
-      helperText={validation ? "" : "날짜 포맷을 지켜주세요"}
+      helperText={validation ? "" : "날짜 포맷을 지켜주세요 (2020년 이후)"}
       variant="outlined"
       value={props.day}
       css={css`
@@ -66,12 +66,7 @@ export default function CreateDialog(props: {
     props.setOpen(false);
   };
   const handleComplete = () => {
-    if (
-      datePattern.test(startDay) &&
-      datePattern.test(endDay) &&
-      alphanumericPattern.test(name) &&
-      name
-    ) {
+    if (properDate(startDay) && properDate(endDay) && alphanumericPattern.test(name) && name) {
       props.onCreate(name, startDay, endDay);
       props.setOpen(false);
     } else {

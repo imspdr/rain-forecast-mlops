@@ -50,13 +50,12 @@ class RainModel(kserve.Model):
             end_day = given[0]
             data_loader = DataLoader(api_key=api_key)
             df = data_loader.load_data(start_day, end_day)
-            input_dict, y_hat, y_proba, y_true = self.predictor.predict(df)
+            y_hat, y_proba, y_true = self.predictor.predict(df)
             result = {
                 "predictions": [{
                     "y_hat": y_hat,
                     "y_true": y_true,
                     "y_proba": y_proba,
-                    "input": input_dict
                 }]
             }
             json_result = json.dumps(obj=result, cls=NpEncoder, indent=4, ensure_ascii=False)
