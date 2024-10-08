@@ -4,12 +4,12 @@ import { Typography } from "@mui/material";
 import { Base } from "@src/store/type";
 import { ResponsiveBar } from "@nivo/bar";
 
-function SingleBar(props: { value: number }) {
+function SingleBar(props: { value: number; width: number }) {
   return (
     <div
       css={css`
         height: 50px;
-        width: 200px;
+        width: ${props.width}px;
       `}
     >
       <ResponsiveBar
@@ -23,7 +23,7 @@ function SingleBar(props: { value: number }) {
         indexBy="label"
         layout="horizontal"
         margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-        colors={"#b6c6fa"}
+        colors={"#87CEEB"}
         maxValue={1}
         axisTop={null}
         axisRight={null}
@@ -86,7 +86,7 @@ export default function Evaluate(props: {
                 `}
               >
                 <Typography variant="h6">{item.name}</Typography>
-                <SingleBar value={Number(Number(item.value).toFixed(4))} />
+                <SingleBar width={props.width} value={Number(Number(item.value).toFixed(4))} />
               </div>
             );
           })}

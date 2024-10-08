@@ -23,7 +23,7 @@ export default function FeatureImportance(props: {
       `}
       elevation={0}
     >
-      <Typography>Feature Importance</Typography>
+      <Typography variant="h6">Feature Importance</Typography>
       {props.data && props.data.label.length <= props.data.value.length && (
         <ResponsivePie
           data={props.data.label

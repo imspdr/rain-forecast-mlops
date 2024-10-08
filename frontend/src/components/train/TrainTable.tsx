@@ -8,7 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 function TrainRow(props: {
   train: Train;
-  onClick: (name: string) => void;
+  onClick: (clicked: Train) => void;
   onDelete: (id: number, name: string) => void;
 }) {
   const [hover, setHover] = useState(false);
@@ -32,7 +32,7 @@ function TrainRow(props: {
       }
       onMouseOver={() => setHover(true)}
       onMouseOut={() => setHover(false)}
-      onDoubleClick={() => props.onClick(props.train.name)}
+      onDoubleClick={() => props.onClick(props.train)}
       css={css`
         padding: 0px;
       `}
@@ -80,7 +80,7 @@ function TrainRow(props: {
 
 export default function TrainTable(props: {
   trains: Train[];
-  onClick: (name: string) => void;
+  onClick: (clicked: Train) => void;
   onDelete: (id: number, name: string) => void;
 }) {
   return (

@@ -7,15 +7,11 @@ import TrainTable from "@src/components/train/TrainTable";
 import DetailPage from "@src/pages/DetailPage";
 import DeleteDialog from "@src/components/train/DeleteDialog";
 import CreateDialog from "@src/components/train/CreateDialog";
-import { TrainedModel } from "@src/store/type";
+import { Train } from "@src/store/type";
 
 function TrainPage() {
   const rootStore = useRootStore();
   const [createOpen, setCreateOpen] = useState(false);
-
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState(-1);
-  const [deleteName, setDeleteName] = useState("");
 
   const refresh = () => {
     rootStore.getTrains();
@@ -71,13 +67,15 @@ function TrainPage() {
             </div>
             <TrainTable
               trains={rootStore.trains}
-              onClick={(name: string) => {
-                rootStore.detail = name;
+              onClick={(clicked: Train) => {
+                rootStore.detail = clicked;
               }}
               onDelete={(id: number, name: string) => {
-                setDeleteId(id);
-                setDeleteName(name);
-                setDeleteOpen(true);
+                rootStore.delete = {
+                  id: id,
+                  name: name,
+                  open: true,
+                };
               }}
             />
           </div>
@@ -87,14 +85,19 @@ function TrainPage() {
       {createOpen && (
         <CreateDialog open={createOpen} setOpen={setCreateOpen} onCreate={rootStore.createTrain} />
       )}
-      {deleteOpen && (
+      {rootStore.delete.open && (
         <DeleteDialog
-          open={deleteOpen}
-          setOpen={setDeleteOpen}
-          name={deleteName}
+          open={rootStore.delete.open}
+          setOpen={(v: boolean) => {
+            rootStore.delete = {
+              ...rootStore.delete,
+              open: v,
+            };
+          }}
+          name={rootStore.delete.name}
           onDelete={() => {
-            rootStore.deleteTrainedModel(deleteName);
-            rootStore.deleteTrain(deleteId);
+            rootStore.deleteTrain();
+            rootStore.detail = undefined;
           }}
         />
       )}

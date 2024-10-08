@@ -1,13 +1,13 @@
 import { Card } from "@mui/material";
 import { css } from "@emotion/react";
 import { Typography } from "@mui/material";
-import { Base } from "@src/store/type";
+import { BaseString } from "@src/store/type";
 
 export default function ModelTitle(props: {
   width: number;
   height: number;
   trainName: string;
-  config: Base[] | undefined;
+  config: BaseString[] | undefined;
 }) {
   return (
     <Card
@@ -32,7 +32,7 @@ export default function ModelTitle(props: {
             gap: 5px;
           `}
         >
-          {props.config.map((item: Base) => {
+          {props.config.map((item: BaseString) => {
             if (item.name === "model name") {
               return <Typography variant="h6">{item.value}</Typography>;
             }
@@ -46,7 +46,7 @@ export default function ModelTitle(props: {
               gap: 10px;
             `}
           >
-            {props.config.map((item: Base) => {
+            {props.config.map((item: BaseString) => {
               if (item.name !== "model name") {
                 return (
                   <div

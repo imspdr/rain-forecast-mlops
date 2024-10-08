@@ -12,28 +12,31 @@ import Evaluate from "@src/components/detail/Evaluate";
 
 function DetailPage() {
   const rootStore = useRootStore();
-  const [dataDistribution, setDataDistribution] = useState<DataDistribution | undefined>(undefined);
+  const [dataDistribution, setDataDistribution] = useState<DataDistribution[] | undefined>(
+    undefined
+  );
   const [trainedModelInfo, setTrainedModelInfo] = useState<TrainedModelInfo | undefined>(undefined);
   useEffect(() => {
-    rootStore
-      .getTrainedModel(rootStore.detail)
-      .then((data) => {
-        if (data) {
-          setTrainedModelInfo(JSON.parse(data?.trained_model_info));
-          setDataDistribution(JSON.parse(data?.data_distribution));
-        }
-      })
-      .catch((e) => (rootStore.detail = ""));
+    rootStore.detail &&
+      rootStore
+        .getTrainedModel(rootStore.detail?.name)
+        .then((data) => {
+          if (data) {
+            setTrainedModelInfo(JSON.parse(data?.trained_model_info));
+            setDataDistribution(JSON.parse(data?.data_distribution));
+          }
+        })
+        .catch((e) => (rootStore.detail = undefined));
   }, [rootStore.detail]);
 
   const buttonCss = `
-  color: #000000;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ffffff;
-`;
+    color: #000000;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+  `;
   return (
     <div
       css={css`
@@ -58,18 +61,18 @@ function DetailPage() {
             ${buttonCss}
           `}
           onClick={() => {
-            rootStore.detail = "";
+            rootStore.detail = undefined;
           }}
         >
           <ArrowBackIos />
         </Button>
         <ModelTitle
-          trainName={rootStore.detail}
+          trainName={rootStore.detail ? rootStore.detail.name : ""}
           config={trainedModelInfo?.best_config}
           width={500}
           height={200}
         />
-        <Evaluate evaluate={trainedModelInfo?.evaluate} width={200} height={200} />
+        <Evaluate evaluate={trainedModelInfo?.evaluate} width={250} height={200} />
 
         <div
           css={css`
@@ -86,7 +89,7 @@ function DetailPage() {
             `}
             onClick={() => {}}
           >
-            <Typography variant="h5">모델 배포하기</Typography>
+            <Typography variant="h5">배포하기</Typography>
           </Button>
           <Button
             css={css`
@@ -94,9 +97,17 @@ function DetailPage() {
               height: 105px;
               ${buttonCss}
             `}
-            onClick={() => {}}
+            onClick={() => {
+              if (rootStore.detail) {
+                rootStore.delete = {
+                  id: rootStore.detail.id,
+                  name: rootStore.detail.name,
+                  open: true,
+                };
+              }
+            }}
           >
-            <Typography variant="h5">모델 삭제하기</Typography>
+            <Typography variant="h5">삭제하기</Typography>
           </Button>
         </div>
       </div>
@@ -107,8 +118,8 @@ function DetailPage() {
           gap: 30px;
         `}
       >
-        <DataDistributionChart width={600} height={400} dataDistribution={dataDistribution} />
-        <FeatureImportance data={trainedModelInfo?.feature_importance} width={600} height={400} />
+        <DataDistributionChart width={610} height={400} dataDistribution={dataDistribution} />
+        <FeatureImportance data={trainedModelInfo?.feature_importance} width={520} height={400} />
       </div>
     </div>
   );

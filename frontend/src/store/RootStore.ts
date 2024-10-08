@@ -2,14 +2,25 @@ import { runInAction, makeAutoObservable } from "mobx";
 import { rainAPI } from "./apis";
 import { Train, TrainedModel } from "./type";
 
+type Del = {
+  id: number;
+  name: string;
+  open: boolean;
+};
 export class RootStore {
   private _trains: Train[];
   private _trainedModels: TrainedModel[];
-  private _detail: string;
+  private _detail: Train | undefined;
+  private _delete: Del;
   constructor() {
     this._trainedModels = [];
     this._trains = [];
-    this._detail = "";
+    this._detail = undefined;
+    this._delete = {
+      id: -1,
+      name: "",
+      open: false,
+    };
     makeAutoObservable(this);
   }
   get trains() {
@@ -21,14 +32,20 @@ export class RootStore {
   get detail() {
     return this._detail;
   }
+  get delete() {
+    return this._delete;
+  }
   set trains(given: Train[]) {
     this._trains = given;
   }
   set trainedModels(given: TrainedModel[]) {
     this._trainedModels = given;
   }
-  set detail(given: string) {
+  set detail(given: Train | undefined) {
     this._detail = given;
+  }
+  set delete(given: Del) {
+    this._delete = given;
   }
 
   getTrains = async () => {
@@ -38,18 +55,14 @@ export class RootStore {
     this.trains = res;
   };
   createTrain = async (name: string, startDay: string, endDay: string) => {
-    const res = await rainAPI.train.create(name, startDay, endDay);
+    await rainAPI.train.create(name, startDay, endDay);
     this.getTrains();
   };
-  deleteTrain = async (id: number) => {
-    const res = await rainAPI.train.delete(id);
+  deleteTrain = async () => {
+    await rainAPI.train.delete(this.delete.id);
+    await rainAPI.model.delete(this.delete.name);
 
     this.getTrains();
-  };
-  deleteAll = async (ids: number[]) => {
-    for (let i = 0; i < ids.length; i++) {
-      await this.deleteTrain(ids[i]!);
-    }
   };
   getTrainedModels = async () => {
     const res = await rainAPI.model.getAll().catch((_) => {
@@ -61,17 +74,13 @@ export class RootStore {
     const res = await rainAPI.model.getTrainedModel(name).catch((_) => undefined);
     return res;
   };
-  deleteTrainedModel = async (trainName: string) => {
-    const res = await rainAPI.model.delete(trainName);
-    this.getTrainedModels();
-  };
 
   deployTrainedModel = async (id: number) => {
-    const res = await rainAPI.model.deploy(id);
+    await rainAPI.model.deploy(id);
     this.getTrainedModels();
   };
   undeployTrainedModel = async (id: number) => {
-    const res = await rainAPI.model.undeploy(id);
+    await rainAPI.model.undeploy(id);
     this.getTrainedModels();
   };
 }

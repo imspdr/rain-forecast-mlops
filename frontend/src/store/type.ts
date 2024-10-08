@@ -39,7 +39,12 @@ export type NumericDist = {
 
 export type Base = {
   name: string;
-  value: number | string;
+  value: number;
+};
+
+export type BaseString = {
+  name: string;
+  value: string;
 };
 
 export type CategoricalDist = {
@@ -47,7 +52,7 @@ export type CategoricalDist = {
 };
 
 export type TrainedModelInfo = {
-  best_config: Base[];
+  best_config: BaseString[];
   evaluate: Base[];
   feature_importance: {
     label: string[];
