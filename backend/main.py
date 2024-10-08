@@ -1,12 +1,11 @@
 from fastapi import Depends, FastAPI, HTTPException, UploadFile, File, Response
 from datetime import datetime
 from sqlalchemy.orm import Session
-from .schemas import *
-from .models import *
-from .db import *
-from .k8s_operations import *
+from infra.schemas import *
+from infra.models import *
+from infra.db import *
+from infra.k8s_operations import *
 import pytz
-import os
 
 kst = pytz.timezone('Asia/Seoul')
 
@@ -110,6 +109,17 @@ def get_trained_model_all_api(db: Session = Depends(get_db), skip: int = 0, limi
         "deployed": tm.deployed
     }, all_trained_model))
 
+@app.get("/trained_model/{train_name}")
+def get_trained_model_all_api(train_name: str, db: Session = Depends(get_db)):
+    tm = db.query(RainTrainedModel).filter(RainTrainedModel.train_name == train_name).first()
+    return {
+        "id": tm.id,
+        "train_name": tm.train_name,
+        "name": tm.name,
+        "data_distribution": tm.data_distribution,
+        "trained_model_info": tm.trained_model_info,
+        "deployed": tm.deployed
+    }
 
 @app.delete("/trained_model/{id}")
 async def delete_trained_model(id: int, db: Session = Depends(get_db)):

@@ -43,6 +43,10 @@ export class RootStore {
     });
     this._trainedModels = res;
   };
+  getTrainedModel = async (name: string) => {
+    const res = await rainAPI.model.getTrainedModel(name);
+    return res;
+  };
   deleteTrainedModel = async (id: number) => {
     const res = await rainAPI.model.delete(id);
     this.getTrainedModels();

@@ -29,6 +29,12 @@ html {
   background: var(--background);
   color: var(--foreground);
   font-family: "GmarketSansMedium";
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 @font-face {
