@@ -56,8 +56,8 @@ export const rainAPI = {
       if (axios.isAxiosError(res)) throw res;
       return res.data;
     },
-    delete: async (id: number) => {
-      const url = `${backend}/trained_model/${id}`;
+    delete: async (name: string) => {
+      const url = `${backend}/trained_model/name/${name}`;
       const res = await axios.delete<void>(url);
       if (axios.isAxiosError(res)) throw res;
       return res.data;

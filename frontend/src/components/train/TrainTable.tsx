@@ -1,58 +1,107 @@
 import { css } from "@emotion/react";
 import { List, ListItem, ListItemButton, ListItemText, Divider, Card } from "@mui/material";
 import { Train } from "@src/store/type";
+import { useState } from "react";
 
-function TrainRow(props: { train: Train; onClick: (name: string) => void }) {
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+function TrainRow(props: {
+  train: Train;
+  onClick: (name: string) => void;
+  onDelete: (id: number, name: string) => void;
+}) {
+  const [hover, setHover] = useState(false);
   return (
-    <ListItemButton onClick={() => props.onClick(props.train.name)}>
-      <ListItemText
+    <ListItem
+      secondaryAction={
+        hover && (
+          <IconButton
+            css={css`
+              width: 40px;
+            `}
+            edge="end"
+            aria-label="delete"
+            onClick={() => {
+              props.onDelete(props.train.id, props.train.name);
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        )
+      }
+      onMouseOver={() => setHover(true)}
+      onMouseOut={() => setHover(false)}
+      onDoubleClick={() => props.onClick(props.train.name)}
+      css={css`
+        padding: 0px;
+      `}
+    >
+      <ListItemButton
         css={css`
-          width: 180px;
+          margin-right: ${hover ? 0 : 32}px;
         `}
-        primary={props.train.name}
-      />
-      <ListItemText
-        css={css`
-          width: 200px;
-        `}
-        primary={`${props.train.start_day} ~ ${props.train.end_day}`}
-      />
-      <ListItemText
-        css={css`
-          width: 200px;
-        `}
-        primary={props.train.created_at}
-      />
-      <ListItemText
-        css={css`
-          width: 200px;
-        `}
-        primary={props.train.finished_at ? props.train.finished_at : "-"}
-      />
-      <ListItemText
-        css={css`
-          width: 120px;
-        `}
-        primary={props.train.status}
-      />
-    </ListItemButton>
+      >
+        <ListItemText
+          css={css`
+            width: 200px;
+            text-overflow: ellipsis;
+          `}
+          primary={props.train.name}
+        />
+        <ListItemText
+          css={css`
+            width: 220px;
+          `}
+          primary={`${props.train.start_day} ~ ${props.train.end_day}`}
+        />
+        <ListItemText
+          css={css`
+            width: 200px;
+          `}
+          primary={props.train.created_at}
+        />
+        <ListItemText
+          css={css`
+            width: 200px;
+          `}
+          primary={props.train.finished_at ? props.train.finished_at : "-"}
+        />
+        <ListItemText
+          css={css`
+            width: 120px;
+          `}
+          primary={props.train.status}
+        />
+      </ListItemButton>
+    </ListItem>
   );
 }
 
-export default function TrainTable(props: { trains: Train[]; onClick: (name: string) => void }) {
+export default function TrainTable(props: {
+  trains: Train[];
+  onClick: (name: string) => void;
+  onDelete: (id: number, name: string) => void;
+}) {
   return (
-    <Card elevation={1}>
+    <Card
+      elevation={0}
+      css={css`
+        height: 600px;
+        overflow: auto;
+      `}
+    >
       <List>
         <ListItem>
           <ListItemText
             css={css`
-              width: 180px;
+              width: 200px;
             `}
             primary={"학습명"}
           />
           <ListItemText
             css={css`
-              width: 200px;
+              width: 220px;
             `}
             primary={`학습 데이터 범위`}
           />
@@ -74,15 +123,33 @@ export default function TrainTable(props: { trains: Train[]; onClick: (name: str
             `}
             primary={"상태"}
           />
+          <ListItemText
+            css={css`
+              width: 40px;
+            `}
+            primary={""}
+          />
         </ListItem>
+        <Divider />
         {props.trains.map((train: Train) => (
           <>
+            <TrainRow train={train} onClick={props.onClick} onDelete={props.onDelete} />
             <Divider />
-            <TrainRow train={train} onClick={props.onClick} />
           </>
         ))}
-
-        <Divider />
+        {props.trains.length === 0 && (
+          <div
+            css={css`
+              height: 500px;
+              width: 940px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            `}
+          >
+            생성된 학습이 없습니다
+          </div>
+        )}
       </List>
     </Card>
   );

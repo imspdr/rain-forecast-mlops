@@ -4,7 +4,7 @@ import { useRootStore } from "@src/store/RootStoreProvider";
 import { useEffect, useState } from "react";
 import { Typography, Button } from "@mui/material";
 import TrainTable from "@src/components/train/TrainTable";
-import DetailMain from "@src/components/detail/DetailMain";
+import DetailPage from "@src/pages/DetailPage";
 import DeleteDialog from "@src/components/train/DeleteDialog";
 import CreateDialog from "@src/components/train/CreateDialog";
 import { TrainedModel } from "@src/store/type";
@@ -12,20 +12,21 @@ import { TrainedModel } from "@src/store/type";
 function TrainPage() {
   const rootStore = useRootStore();
   const [createOpen, setCreateOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [detail, setDetail] = useState("");
 
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(-1);
+  const [deleteName, setDeleteName] = useState("");
+
+  const refresh = () => {
+    rootStore.getTrains();
+  };
   useEffect(() => {
     rootStore.getTrains();
-    setInterval(() => {
-      rootStore.getTrains();
-      rootStore.getTrainedModels();
-    }, 20000);
-  }, []);
+  }, [rootStore.detail]);
   return (
     <>
-      {detail ? (
-        <DetailMain trainedModel={rootStore.trainedModels.find((tm) => tm.train_name === detail)} />
+      {!!rootStore.detail ? (
+        <DetailPage />
       ) : (
         <div
           css={css`
@@ -42,29 +43,61 @@ function TrainPage() {
               align-items: flex-start;
             `}
           >
-            <Button
-              css={css`
-                height: 40px;
-                width: 120px;
-                font-size: 15px;
-                margin: 20px 10px;
-              `}
-              variant={"outlined"}
-              onClick={() => setCreateOpen(true)}
-            >
-              새 학습 생성
-            </Button>
+            <div>
+              <Button
+                css={css`
+                  height: 40px;
+                  width: 120px;
+                  font-size: 15px;
+                  margin: 20px 10px;
+                `}
+                variant={"outlined"}
+                onClick={() => setCreateOpen(true)}
+              >
+                새 학습 생성
+              </Button>
+              <Button
+                css={css`
+                  height: 40px;
+                  width: 120px;
+                  font-size: 15px;
+                  margin: 20px 10px;
+                `}
+                variant={"outlined"}
+                onClick={refresh}
+              >
+                새로고침
+              </Button>
+            </div>
             <TrainTable
               trains={rootStore.trains}
               onClick={(name: string) => {
-                setDetail(name);
+                rootStore.detail = name;
+              }}
+              onDelete={(id: number, name: string) => {
+                setDeleteId(id);
+                setDeleteName(name);
+                setDeleteOpen(true);
               }}
             />
           </div>
         </div>
       )}
 
-      <CreateDialog open={createOpen} setOpen={setCreateOpen} onCreate={rootStore.createTrain} />
+      {createOpen && (
+        <CreateDialog open={createOpen} setOpen={setCreateOpen} onCreate={rootStore.createTrain} />
+      )}
+      {deleteOpen && (
+        <DeleteDialog
+          open={deleteOpen}
+          setOpen={setDeleteOpen}
+          name={deleteName}
+          onDelete={() => {
+            rootStore.deleteTrainedModel(deleteName);
+            rootStore.deleteTrain(deleteId);
+          }}
+        />
+      )}
     </>
   );
 }

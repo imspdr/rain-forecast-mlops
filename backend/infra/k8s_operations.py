@@ -1,6 +1,7 @@
 from kubernetes import client, config
 
-url = "http://172.30.1.29:8000"
+#BACKEND_URL = "http://172.30.1.29:8000"
+BACKEND_URL = "http://192.168.120.36:8000"
 
 def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "1000m", mem: str = "1Gi"):
     config.load_kube_config()
@@ -20,7 +21,7 @@ def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "
                             image="konglsh96/rain-forecast-mlops:trainer",
                             image_pull_policy="Always",
                             command=["python3", "train_main.py"],
-                            args=["--url", url, "--train_name", train_name.lower(), "--start_day", start_day, "--end_day",
+                            args=["--url", BACKEND_URL, "--train_name", train_name.lower(), "--start_day", start_day, "--end_day",
                                   end_day],
                             resources=client.V1ResourceRequirements(
                                 requests={"cpu": cpu, "memory": mem},

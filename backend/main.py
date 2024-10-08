@@ -13,9 +13,6 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-url = "http://172.30.1.29:8000"
-
-
 def get_db():
     db = SessionLocal()
     try:
@@ -104,22 +101,23 @@ def get_trained_model_all_api(db: Session = Depends(get_db), skip: int = 0, limi
         "id": tm.id,
         "train_name": tm.train_name,
         "name": tm.name,
-        "data_distribution": tm.data_distribution,
-        "trained_model_info": tm.trained_model_info,
         "deployed": tm.deployed
     }, all_trained_model))
 
 @app.get("/trained_model/{train_name}")
-def get_trained_model_all_api(train_name: str, db: Session = Depends(get_db)):
+def get_trained_model_by_train_name(train_name: str, db: Session = Depends(get_db)):
     tm = db.query(RainTrainedModel).filter(RainTrainedModel.train_name == train_name).first()
-    return {
-        "id": tm.id,
-        "train_name": tm.train_name,
-        "name": tm.name,
-        "data_distribution": tm.data_distribution,
-        "trained_model_info": tm.trained_model_info,
-        "deployed": tm.deployed
-    }
+    if tm:
+        return {
+            "id": tm.id,
+            "train_name": tm.train_name,
+            "name": tm.name,
+            "data_distribution": tm.data_distribution,
+            "trained_model_info": tm.trained_model_info,
+            "deployed": tm.deployed
+        }
+    else:
+        raise HTTPException(status_code=404, detail="Model not found")
 
 @app.delete("/trained_model/{id}")
 async def delete_trained_model(id: int, db: Session = Depends(get_db)):
@@ -128,6 +126,16 @@ async def delete_trained_model(id: int, db: Session = Depends(get_db)):
         db.delete(trained_model)
         db.commit()
         return {"message": f"trained_model {id} has been deleted."}
+    else:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+@app.delete("/trained_model/name/{train_name}")
+async def delete_trained_model_by_train_name(train_name: str, db: Session = Depends(get_db)):
+    trained_model = db.query(RainTrainedModel).filter(RainTrainedModel.train_name == train_name).first()
+    if trained_model:
+        db.delete(trained_model)
+        db.commit()
+        return {"message": f"trained_model named {train_name} has been deleted."}
     else:
         raise HTTPException(status_code=404, detail="Item not found")
 
@@ -151,7 +159,7 @@ async def deploy_trained_model(id: int, db: Session = Depends(get_db)):
     if trained_model:
         trained_model.deployed = "true"
         try:
-            create_trained_model_crd(trained_model.train_name, url + f"/trained_model/download/{id}/predictor.pkl")
+            create_trained_model_crd(trained_model.train_name, BACKEND_URL + f"/trained_model/download/{id}/predictor.pkl")
             db.commit()
             db.refresh(trained_model)
         except Exception as e:

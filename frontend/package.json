@@ -8,7 +8,6 @@
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.10.14",
     "@mui/material": "^5.10.14",
-    "@mui/x-date-pickers": "^7.19.0",
     "@nivo/bar": "0.80.0",
     "@nivo/core": "^0.80.0",
     "@nivo/pie": "^0.80.0",

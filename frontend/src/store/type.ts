@@ -18,3 +18,39 @@ export type TrainedModel = {
   trained_model_info: string;
   deployed: string;
 };
+
+export type DataDistribution = {
+  col_name: string;
+  col_type: string;
+  distribution: NumericDist | CategoricalDist | [];
+};
+
+export type NumericDist = {
+  minmax: {
+    min: number;
+    max: number;
+    mean: number;
+  };
+  histogram: {
+    counts: number[];
+    bins: number[];
+  };
+};
+
+export type Base = {
+  name: string;
+  value: number | string;
+};
+
+export type CategoricalDist = {
+  value_percentage: Base[];
+};
+
+export type TrainedModelInfo = {
+  best_config: Base[];
+  evaluate: Base[];
+  feature_importance: {
+    label: string[];
+    value: number[];
+  };
+};
