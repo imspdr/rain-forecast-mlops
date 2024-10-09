@@ -50,8 +50,8 @@ pkl_file = open("predictor.pkl", "rb")
 predictor = pickle.load(pkl_file)
 
 api_key="3I2HmlWkQhGNh5pVpOIRng"
-start_day = "20240912"
-end_day = "20240912"
+start_day = "20241009"
+end_day = "20241009"
 data_loader = DataLoader(api_key=api_key)
 df = data_loader.load_data(start_day, end_day)
 print(predictor.predict(df))

@@ -44,10 +44,11 @@ class FeatureEngineering:
                     return 0
             except(TypeError, ValueError):
                 return -1
-        df["label"] = df[target].shift(-1).apply(labeling)
-        if train:
-            df = df.drop(df.index[-1])
 
+        df["label"] = df[target].apply(labeling)
+        if train:
+            df["label"].shift(-1)
+            df = df.drop(df.index[-1])
         y = df["label"]
         X = df.drop(columns=["label"])
 
