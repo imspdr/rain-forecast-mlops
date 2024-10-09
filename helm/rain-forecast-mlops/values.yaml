@@ -1,4 +1,4 @@
-namespace: rain-forecast-mlops
+namespace: default
 frontend:
   image: konglsh96/rain-forecast-mlops:front
   resources:

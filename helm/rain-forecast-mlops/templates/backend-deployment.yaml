@@ -13,6 +13,7 @@ spec:
       labels:
         app: rain-forecast-mlops-back
     spec:
+      serviceAccountName: rain-forecast-mlops-sa
       containers:
       - name: rain-forecast-mlops-back
         image: {{ .Values.backend.image }}

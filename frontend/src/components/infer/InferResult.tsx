@@ -51,7 +51,6 @@ function ResultSingle(props: {
           <div
             css={css`
               width: 200px;
-
               display: flex;
               flex-direction: row;
               justify-content: space-between;
@@ -65,7 +64,7 @@ function ResultSingle(props: {
                   margin-left: 5px;
                   font-size: 12px;
                 `}
-              >{`강수 확률: ${yProba! * 100}%`}</span>
+              >{`강수 확률: ${(yProba! * 100).toFixed(2)}%`}</span>
             </div>
             <ResultIcon y={yTrue!} />
           </div>

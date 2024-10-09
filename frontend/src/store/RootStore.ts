@@ -56,12 +56,12 @@ export class RootStore {
     this.trains = res;
   };
   createTrain = async (name: string, startDay: string, endDay: string) => {
-    await rainAPI.train.create(name, startDay, endDay);
+    await rainAPI.train.create(name, startDay, endDay).catch(() => {});
     this.getTrains();
   };
   deleteTrain = async () => {
-    await rainAPI.train.delete(this.delete.id);
-    await rainAPI.model.delete(this.delete.name);
+    await rainAPI.train.delete(this.delete.id).catch(() => {});
+    await rainAPI.model.delete(this.delete.name).catch(() => {});
 
     this.getTrains();
   };

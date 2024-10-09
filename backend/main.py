@@ -5,11 +5,18 @@ from infra.schemas import *
 from infra.models import *
 from infra.db import *
 from infra.k8s_operations import *
+from kubernetes import client, config
+from kubernetes.config.config_exception import ConfigException
 import pytz
 
 kst = pytz.timezone('Asia/Seoul')
 
 Base.metadata.create_all(bind=engine)
+
+try:
+    config.load_incluster_config()
+except ConfigException as e:
+    print(f"Failed to load kube-config: {e}")
 
 app = FastAPI()
 

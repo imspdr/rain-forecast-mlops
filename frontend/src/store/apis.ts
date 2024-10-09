@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Train, TrainedModel, TrainedModelSimple } from "./type";
 
-const namespace = "rain-forecast-mlops";
+const namespace = "TOENVNAMESPACE";
 const backend = "/api";
 
 const rainHost = `rain-multi-model.${namespace}.example.com`;

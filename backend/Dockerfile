@@ -1,11 +1,11 @@
 FROM python:3.10
 
-ADD main.py /root
-ADD infra /root/infra
-ADD requirements.txt /root
-
 WORKDIR /root
+ADD requirements.txt /root
 RUN pip install -r requirements.txt
+
+ADD infra /root/infra
+ADD main.py /root
 
 EXPOSE 8000
 

@@ -1,4 +1,4 @@
-from kubernetes import client, config
+from kubernetes import client
 import os
 
 BACKEND_IP = os.getenv("BACKEND_IP", "localhost")
@@ -9,7 +9,6 @@ BACKEND_URL = f"http://{BACKEND_IP}:{BACKEND_PORT}"
 #BACKEND_URL = "http://192.168.120.36:8000"
 
 def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "1000m", mem: str = "1Gi"):
-    config.load_kube_config()
     job = client.V1Job(
         api_version="batch/v1",
         kind="Job",
@@ -47,7 +46,6 @@ def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "
     )
 
 def create_trained_model_crd(model_name: str, storage_uri: str):
-    config.load_kube_config()
     client.CustomObjectsApi().create_namespaced_custom_object(
         group="serving.kserve.io",
         version="v1alpha1",
@@ -71,7 +69,6 @@ def create_trained_model_crd(model_name: str, storage_uri: str):
     )
 
 def delete_trained_model_crd(model_name: str):
-    config.load_kube_config()
     client.CustomObjectsApi().delete_namespaced_custom_object(
         group="serving.kserve.io",
         version="v1alpha1",

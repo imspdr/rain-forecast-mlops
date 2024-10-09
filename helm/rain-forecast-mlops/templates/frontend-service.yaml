@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   selector:
-    app: rain-forcast-mlops-front
+    app: rain-forecast-mlops-front
   ports:
     - protocol: TCP
       port: 80

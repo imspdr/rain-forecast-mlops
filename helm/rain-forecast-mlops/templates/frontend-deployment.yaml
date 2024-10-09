@@ -27,6 +27,8 @@ spec:
               cpu: {{ .Values.frontend.resources.requests.cpu }}
               memory: {{ .Values.frontend.resources.requests.memory }}
           env:
+            - name: NAMESPACE
+              value: "{{ .Values.namespace }}"
             - name: BACKEND_IP
               value: "{{ .Values.backend.ip }}"
             - name: BACKEND_PORT
