@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     matchLabels:
@@ -18,9 +19,9 @@ spec:
         name: mysql
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: root
+          value: "{{ .Values.mysql.password }}"
         - name: MYSQL_DATABASE
-          value: rain
+          value: "{{ .Values.mysql.db }}"
         ports:
         - containerPort: 3306
           name: mysql
@@ -36,11 +37,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql
+  namespace: {{ .Values.namespace }}
 spec:
   type: NodePort
   ports:
     - port: 3306
       targetPort: 3306
-      nodePort: 30007
+      nodePort: {{ .Values.mysql.port }}
   selector:
     app: mysql
+  externalIPs:
+    - {{ .Values.mysql.ip }}

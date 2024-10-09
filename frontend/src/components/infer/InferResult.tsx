@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import WaterDropOutlinedIcon from "@mui/icons-material/WaterDropOutlined";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import { Divider } from "@mui/material";
 
 const isOk = (y: number | undefined) => {
@@ -9,7 +10,17 @@ const isOk = (y: number | undefined) => {
 
 //y_pred, y_proba, y_hat
 function ResultIcon(props: { y: number }) {
-  return <>{props.y === 1 ? <WaterDropOutlinedIcon /> : <WbSunnyOutlinedIcon />}</>;
+  return (
+    <>
+      {props.y === 1 ? (
+        <WaterDropOutlinedIcon />
+      ) : props.y === 0 ? (
+        <WbSunnyOutlinedIcon />
+      ) : (
+        <QuestionMarkIcon />
+      )}
+    </>
+  );
 }
 
 function ResultSingle(props: {

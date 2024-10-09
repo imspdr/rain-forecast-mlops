@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rain-forecast-mlops-back
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rain-forecast-mlops-back
+  template:
+    metadata:
+      labels:
+        app: rain-forecast-mlops-back
+    spec:
+      containers:
+      - name: rain-forecast-mlops-back
+        image: {{ .Values.backend.image }}
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8000
+        resources:
+          limits:
+            cpu: {{ .Values.backend.resources.limits.cpu }}
+            memory: {{ .Values.backend.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.backend.resources.requests.cpu }}
+            memory: {{ .Values.backend.resources.requests.memory }}
+        env:
+          - name: BACKEND_IP
+            value: "{{ .Values.backend.ip }}"
+          - name: BACKEND_PORT
+            value: "{{ .Values.backend.port }}"
+          - name: MYSQL_IP
+            value: "{{ .Values.mysql.ip }}"
+          - name: MYSQL_PORT
+            value: "{{ .Values.mysql.port }}"
+          - name: MYSQL_USER
+            value: "{{ .Values.mysql.user }}"
+          - name: MYSQL_PASSWORD
+            value: "{{ .Values.mysql.password }}"
+          - name: MYSQL_DB
+            value: "{{ .Values.mysql.db }}"

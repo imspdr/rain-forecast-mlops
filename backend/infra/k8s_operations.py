@@ -1,6 +1,11 @@
 from kubernetes import client, config
+import os
 
-BACKEND_URL = "http://172.30.1.29:8000"
+BACKEND_IP = os.getenv("BACKEND_IP", "localhost")
+BACKEND_PORT = os.getenv("BACKEND_PORT", "8000")
+
+BACKEND_URL = f"http://{BACKEND_IP}:{BACKEND_PORT}"
+#BACKEND_URL = "http://172.30.1.29:8000"
 #BACKEND_URL = "http://192.168.120.36:8000"
 
 def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "1000m", mem: str = "1Gi"):

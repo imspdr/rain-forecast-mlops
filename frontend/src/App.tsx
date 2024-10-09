@@ -6,7 +6,7 @@ import TrainPage from "./pages/TrainPage";
 import InferPage from "./pages/InferPage";
 
 function App() {
-  const [tab, setTab] = useState(1);
+  const [tab, setTab] = useState(0);
 
   const tabInfos = [
     {

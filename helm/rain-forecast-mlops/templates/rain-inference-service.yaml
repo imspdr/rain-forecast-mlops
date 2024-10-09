@@ -2,6 +2,7 @@ apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:
   name: rain-multi-model
+  namespace: {{ .Values.namespace }}
 spec:
   predictor:
     containers:
