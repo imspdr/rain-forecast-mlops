@@ -76,7 +76,7 @@ function ResultSingle(props: {
 
 export default function InferResult(props: { yHat: number[]; yTrue: number[]; yProba: number[] }) {
   const timeArray = [];
-  for (let i = 0; i < 24; i++) {
+  for (let i = 1; i < 25; i++) {
     timeArray.push(i);
   }
   return (
