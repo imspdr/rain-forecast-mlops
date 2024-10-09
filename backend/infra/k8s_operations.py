@@ -3,6 +3,7 @@ import os
 
 BACKEND_IP = os.getenv("BACKEND_IP", "localhost")
 BACKEND_PORT = os.getenv("BACKEND_PORT", "8000")
+NAMESPACE = os.getenv("NAMESPACE", "default")
 
 BACKEND_URL = f"http://{BACKEND_IP}:{BACKEND_PORT}"
 #BACKEND_URL = "http://172.30.1.29:8000"
@@ -42,14 +43,14 @@ def create_train_pod(train_name: str, start_day: str, end_day: str, cpu: str = "
     batch_v1 = client.BatchV1Api()
     batch_v1.create_namespaced_job(
         body=job,
-        namespace="default"
+        namespace=NAMESPACE
     )
 
 def create_trained_model_crd(model_name: str, storage_uri: str):
     client.CustomObjectsApi().create_namespaced_custom_object(
         group="serving.kserve.io",
         version="v1alpha1",
-        namespace="default",
+        namespace=NAMESPACE,
         plural="trainedmodels",
         body={
             "apiVersion": "serving.kserve.io/v1alpha1",
@@ -72,7 +73,7 @@ def delete_trained_model_crd(model_name: str):
     client.CustomObjectsApi().delete_namespaced_custom_object(
         group="serving.kserve.io",
         version="v1alpha1",
-        namespace="default",
+        namespace=NAMESPACE,
         plural="trainedmodels",
         name=model_name
     )

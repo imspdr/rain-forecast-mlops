@@ -109,14 +109,14 @@ export default function InferResult(props: { yHat: number[]; yTrue: number[]; yP
           <span>실제</span>
         </div>
         {timeArray
-          .filter((i) => i < 12)
+          .filter((i) => i < 13)
           .map((i) => {
             return (
               <ResultSingle
                 time={i}
-                yHat={props.yHat[i]}
-                yTrue={props.yTrue[i]}
-                yProba={props.yProba[i]}
+                yHat={props.yHat[i - 1]}
+                yTrue={props.yTrue[i - 1]}
+                yProba={props.yProba[i - 1]}
               />
             );
           })}
@@ -142,14 +142,14 @@ export default function InferResult(props: { yHat: number[]; yTrue: number[]; yP
           <span>실제</span>
         </div>
         {timeArray
-          .filter((i) => i >= 12)
+          .filter((i) => i >= 13)
           .map((i) => {
             return (
               <ResultSingle
                 time={i}
-                yHat={props.yHat[i]}
-                yTrue={props.yTrue[i]}
-                yProba={props.yProba[i]}
+                yHat={props.yHat[i - 1]}
+                yTrue={props.yTrue[i - 1]}
+                yProba={props.yProba[i - 1]}
               />
             );
           })}

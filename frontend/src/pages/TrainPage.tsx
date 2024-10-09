@@ -59,7 +59,9 @@ function TrainPage() {
           <TrainTable
             trains={rootStore.trains}
             onClick={(clicked: Train) => {
-              rootStore.detail = clicked;
+              if (clicked.status === "complete") {
+                rootStore.detail = clicked;
+              }
             }}
             onDelete={(id: number, name: string) => {
               rootStore.delete = {

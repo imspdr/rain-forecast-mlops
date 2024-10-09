@@ -47,7 +47,7 @@ class FeatureEngineering:
 
         df["label"] = df[target].apply(labeling)
         if train:
-            df["label"].shift(-1)
+            df["label"] = df["label"].shift(-1)
             df = df.drop(df.index[-1])
         y = df["label"]
         X = df.drop(columns=["label"])

@@ -28,6 +28,8 @@ spec:
             cpu: {{ .Values.backend.resources.requests.cpu }}
             memory: {{ .Values.backend.resources.requests.memory }}
         env:
+          - name: NAMESPACE
+            value: "{{ .Values.namespace }}"
           - name: BACKEND_IP
             value: "{{ .Values.backend.ip }}"
           - name: BACKEND_PORT
