@@ -102,6 +102,12 @@ configspace를 정의하고 그 범위 내에서 HPO를 진행하여 모델을 �
 HPO과정에서 탐색할 configspace를 정의할 때 모델 명을 categorical parameter로 넣어 각 iteration마다 선택된 모델을 이용하여 평가를 진행할 수 있도록 구현했다.
 이를 위해 두 모델을 하나의 포맷으로 다룰 수 있도록 ModelRunner라는 class를 만들어 관리했다. 
 
+배포에는 Kserve inference service 중 multi model server 기능을 이용해 구현했다.
+Inferenceservice crd는 기본적으로 생성시 사용할 image를 입력값으로 넣어줘야하는데, 
+본 프로젝트와 같이 학습 모델이 빈번히 업데이트되는 경우에는 부적합하다. 
+multi model server의 경우 이를 해결하기 위해 모델 파일을 갖고 있지않은 image를 사용해 inference service를 생성한 후에
+trained model이라는 crd가 제출될 때마다 이를 감지하여 trainedmodel에 작성된 url을 통해 모델 파일을 다운로드하여 서빙하는 방식이다.
+
 # Future Work
 
 - FastAPI의 경우 이번 프로젝트를 통해 처음 다루어봤기도하고, 
