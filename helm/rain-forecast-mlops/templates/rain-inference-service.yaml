@@ -16,8 +16,8 @@ spec:
         imagePullPolicy: Always
         resources:
           limits:
-            cpu: 1
-            memory: 2Gi
+            cpu: {{ .Values.mmsisvc.resources.limits.cpu }}
+            memory: {{ .Values.mmsisvc.resources.limits.memory }}
           requests:
-            cpu: 1
-            memory: 2Gi
+            cpu: {{ .Values.mmsisvc.resources.requests.cpu }}
+            memory: {{ .Values.mmsisvc.resources.requests.memory }}

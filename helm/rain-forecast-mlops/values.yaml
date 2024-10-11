@@ -17,15 +17,30 @@ backend:
   port: 30013
   resources:
     limits:
-      cpu: 1
-      memory: 300Mi
+      cpu: 100m
+      memory: 100Mi
     requests:
-      cpu: 1
-      memory: 300Mi
+      cpu: 100m
+      memory: 100Mi
+mmsisvc:
+  resources:
+    limits:
+      cpu: 200m
+      memory: 2Gi
+    requests:
+      cpu: 200m
+      memory: 2Gi
 istio:
   ip: 192.168.49.2
   port: 31397
 mysql:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 500Mi
   ip: 192.168.49.2
   port: 30007
   user: root
