@@ -34,6 +34,10 @@ spec:
             value: "{{ .Values.backend.ip }}"
           - name: BACKEND_PORT
             value: "{{ .Values.backend.port }}"
+          - name: TRAIN_CPU
+            value: "{{ .Values.backend.train.cpu }}"
+          - name: TRAIN_MEMORY
+            value: "{{ .Values.backend.train.memory }}"
           - name: MYSQL_IP
             value: "{{ .Values.mysql.ip }}"
           - name: MYSQL_PORT

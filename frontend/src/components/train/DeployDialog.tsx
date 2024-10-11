@@ -42,6 +42,7 @@ export default function DeployDialog(props: {
       </DialogTitle>
       <DialogContent>
         <Typography variant="caption">{"최대 9개의 모델까지 배포할 수 있습니다."}</Typography>
+        <Typography variant="caption">{"모델 배포 후 추론이 가능하기까지 수 분 소요될 수 있습니다.."}</Typography>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} disableElevation size="large">

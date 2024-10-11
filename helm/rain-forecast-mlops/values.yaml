@@ -15,6 +15,9 @@ backend:
   image: konglsh96/rain-forecast-mlops:back
   ip: 192.168.49.2
   port: 30013
+  train:
+    cpu: 300m
+    memory: 1Gi
   resources:
     limits:
       cpu: 100m

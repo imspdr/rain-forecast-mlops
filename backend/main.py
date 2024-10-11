@@ -38,7 +38,7 @@ async def create_train_api(train_create: TrainCreate, db: Session = Depends(get_
     db.add(db_train)
     db.commit()
     db.refresh(db_train)
-    create_train_pod(train_create.name, train_create.start_day, train_create.end_day, train_create.cpu_size, train_create.memory_size)
+    create_train_pod(train_create.name, train_create.start_day, train_create.end_day)
     return db_train
 
 @app.get("/train/all/")
