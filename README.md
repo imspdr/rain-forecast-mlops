@@ -44,13 +44,14 @@ $ helm upgrade --install rain-forecast-mlops rain-forecast-mlops
 
 <div style="text-align: center;">
   <img src="res/rain_model.png" alt="model" style="width: 80%;">
-  <p>모델 결과 확인</p>
+  <p>학습 결과 확인</p>
 </div>
 
-<div style="text-align: center;">
-  <img src="res/rain_infer.png" alt="infer" style="width: 80%;">
-  <p>추론 결과 확인 </p>
+<div style="display: flex; justify-content: center; align-items: center;">
+  <img src="res/rain_infer.png" alt="infer" style="width: 48%; margin-right: 2%;">
+  <img src="res/rain_infer2.png" alt="infer2" style="width: 48%;">
 </div>
+<p style="text-align: center;">추론 결과 확인</p>
 
 # Backend
 
