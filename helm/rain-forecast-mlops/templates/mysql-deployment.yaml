@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: rain-ops-mysql
   namespace: {{ .Values.namespace }}
 spec:
   selector:
     matchLabels:
-      app: mysql
+      app: rain-ops-mysql
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mysql
+        app: rain-ops-mysql
     spec:
       containers:
       - image: mysql:latest
@@ -26,8 +26,8 @@ spec:
         - containerPort: 3306
           name: mysql
         volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
+        - name: rain-ops-mysql-persistent-storage
+          mountPath: /var/lib/rain-ops-mysql
         resources:
           limits:
             cpu: {{ .Values.mysql.resources.limits.cpu }}
@@ -36,14 +36,14 @@ spec:
             cpu: {{ .Values.mysql.resources.requests.cpu }}
             memory: {{ .Values.mysql.resources.requests.memory }}
       volumes:
-      - name: mysql-persistent-storage
+      - name: rain-ops-mysql-persistent-storage
         persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          claimName: rain-ops-mysql-pv-claim
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
+  name: rain-ops-mysql
   namespace: {{ .Values.namespace }}
 spec:
   type: NodePort
@@ -52,6 +52,6 @@ spec:
       targetPort: 3306
       nodePort: {{ .Values.mysql.port }}
   selector:
-    app: mysql
+    app: rain-ops-mysql
   externalIPs:
     - {{ .Values.mysql.ip }}

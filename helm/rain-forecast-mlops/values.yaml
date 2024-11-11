@@ -10,7 +10,7 @@ frontend:
       memory: 100Mi
   service:
     ip: 192.168.49.2
-    port: 31233
+    port: 31232
 backend:
   image: konglsh96/rain-forecast-mlops:back
   ip: 192.168.49.2
@@ -20,18 +20,18 @@ backend:
     memory: 1Gi
   resources:
     limits:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 500m
+      memory: 500Mi
     requests:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 500m
+      memory: 500Mi
 mmsisvc:
   resources:
     limits:
-      cpu: 200m
+      cpu: 500m
       memory: 2Gi
     requests:
-      cpu: 200m
+      cpu: 500m
       memory: 2Gi
 istio:
   ip: 192.168.49.2
@@ -45,7 +45,7 @@ mysql:
       cpu: 100m
       memory: 500Mi
   ip: 192.168.49.2
-  port: 30007
+  port: 30014
   user: root
   password: root
   db: rain
